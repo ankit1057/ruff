@@ -2933,6 +2933,7 @@ pub enum AnyNodeRef<'a> {
     WithItem(&'a WithItem),
     MatchCase(&'a MatchCase),
     Decorator(&'a Decorator),
+    ElifElseClause(&'a ast::ElifElseClause),
     TypeParams(&'a TypeParams),
     TypeParamTypeVar(&'a TypeParamTypeVar),
     TypeParamTypeVarTuple(&'a TypeParamTypeVarTuple),
@@ -2940,7 +2941,6 @@ pub enum AnyNodeRef<'a> {
     FString(&'a ast::FString),
     StringLiteral(&'a ast::StringLiteral),
     BytesLiteral(&'a ast::BytesLiteral),
-    ElifElseClause(&'a ast::ElifElseClause),
     Identifier(&'a ast::Identifier),
 }
 
