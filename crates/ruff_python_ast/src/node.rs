@@ -9,8 +9,6 @@ use ruff_text_size::{Ranged, TextRange};
 use std::ptr::NonNull;
 
 pub trait AstNode: Ranged {
-    fn can_cast(kind: NodeKind) -> bool;
-
     /// Returns the [`AnyNodeRef`] referencing this node.
     fn as_any_node_ref(&self) -> AnyNodeRef;
 
@@ -733,10 +731,6 @@ impl AnyNode {
 }
 
 impl AstNode for ast::ModModule {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ModModule)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -755,10 +749,6 @@ impl AstNode for ast::ModModule {
 }
 
 impl AstNode for ast::ModExpression {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ModExpression)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -776,10 +766,6 @@ impl AstNode for ast::ModExpression {
     }
 }
 impl AstNode for ast::StmtFunctionDef {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtFunctionDef)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -819,10 +805,6 @@ impl AstNode for ast::StmtFunctionDef {
     }
 }
 impl AstNode for ast::StmtClassDef {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtClassDef)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -859,10 +841,6 @@ impl AstNode for ast::StmtClassDef {
     }
 }
 impl AstNode for ast::StmtReturn {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtReturn)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -882,10 +860,6 @@ impl AstNode for ast::StmtReturn {
     }
 }
 impl AstNode for ast::StmtDelete {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtDelete)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -905,10 +879,6 @@ impl AstNode for ast::StmtDelete {
     }
 }
 impl AstNode for ast::StmtTypeAlias {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtTypeAlias)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -936,10 +906,6 @@ impl AstNode for ast::StmtTypeAlias {
     }
 }
 impl AstNode for ast::StmtAssign {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtAssign)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -966,10 +932,6 @@ impl AstNode for ast::StmtAssign {
     }
 }
 impl AstNode for ast::StmtAugAssign {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtAugAssign)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -995,10 +957,6 @@ impl AstNode for ast::StmtAugAssign {
     }
 }
 impl AstNode for ast::StmtAnnAssign {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtAnnAssign)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1027,10 +985,6 @@ impl AstNode for ast::StmtAnnAssign {
     }
 }
 impl AstNode for ast::StmtFor {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtFor)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1058,10 +1012,6 @@ impl AstNode for ast::StmtFor {
     }
 }
 impl AstNode for ast::StmtWhile {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtWhile)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1087,10 +1037,6 @@ impl AstNode for ast::StmtWhile {
     }
 }
 impl AstNode for ast::StmtIf {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtIf)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1118,10 +1064,6 @@ impl AstNode for ast::StmtIf {
     }
 }
 impl AstNode for ast::ElifElseClause {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ElifElseClause)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1146,10 +1088,6 @@ impl AstNode for ast::ElifElseClause {
     }
 }
 impl AstNode for ast::StmtWith {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtWith)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1176,10 +1114,6 @@ impl AstNode for ast::StmtWith {
     }
 }
 impl AstNode for ast::StmtMatch {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtMatch)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1205,10 +1139,6 @@ impl AstNode for ast::StmtMatch {
     }
 }
 impl AstNode for ast::StmtRaise {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtRaise)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1236,10 +1166,6 @@ impl AstNode for ast::StmtRaise {
     }
 }
 impl AstNode for ast::StmtTry {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtTry)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1270,10 +1196,6 @@ impl AstNode for ast::StmtTry {
     }
 }
 impl AstNode for ast::StmtAssert {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtAssert)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1298,10 +1220,6 @@ impl AstNode for ast::StmtAssert {
     }
 }
 impl AstNode for ast::StmtImport {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtImport)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1322,10 +1240,6 @@ impl AstNode for ast::StmtImport {
     }
 }
 impl AstNode for ast::StmtImportFrom {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtImportFrom)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1351,10 +1265,6 @@ impl AstNode for ast::StmtImportFrom {
     }
 }
 impl AstNode for ast::StmtGlobal {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtGlobal)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1371,10 +1281,6 @@ impl AstNode for ast::StmtGlobal {
     }
 }
 impl AstNode for ast::StmtNonlocal {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtNonlocal)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1391,10 +1297,6 @@ impl AstNode for ast::StmtNonlocal {
     }
 }
 impl AstNode for ast::StmtExpr {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtExpr)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1413,10 +1315,6 @@ impl AstNode for ast::StmtExpr {
     }
 }
 impl AstNode for ast::StmtPass {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtPass)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1433,10 +1331,6 @@ impl AstNode for ast::StmtPass {
     }
 }
 impl AstNode for ast::StmtBreak {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtBreak)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1453,10 +1347,6 @@ impl AstNode for ast::StmtBreak {
     }
 }
 impl AstNode for ast::StmtContinue {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtContinue)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1473,10 +1363,6 @@ impl AstNode for ast::StmtContinue {
     }
 }
 impl AstNode for ast::StmtIpyEscapeCommand {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StmtIpyEscapeCommand)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1493,10 +1379,6 @@ impl AstNode for ast::StmtIpyEscapeCommand {
     }
 }
 impl AstNode for ast::ExprBoolOp {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprBoolOp)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1529,10 +1411,6 @@ impl AstNode for ast::ExprBoolOp {
     }
 }
 impl AstNode for ast::ExprNamed {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprNamed)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1555,10 +1433,6 @@ impl AstNode for ast::ExprNamed {
     }
 }
 impl AstNode for ast::ExprBinOp {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprBinOp)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1583,10 +1457,6 @@ impl AstNode for ast::ExprBinOp {
     }
 }
 impl AstNode for ast::ExprUnaryOp {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprUnaryOp)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1610,10 +1480,6 @@ impl AstNode for ast::ExprUnaryOp {
     }
 }
 impl AstNode for ast::ExprLambda {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprLambda)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1639,10 +1505,6 @@ impl AstNode for ast::ExprLambda {
     }
 }
 impl AstNode for ast::ExprIf {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprIf)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1669,10 +1531,6 @@ impl AstNode for ast::ExprIf {
     }
 }
 impl AstNode for ast::ExprDict {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprDict)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1696,10 +1554,6 @@ impl AstNode for ast::ExprDict {
     }
 }
 impl AstNode for ast::ExprSet {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprSet)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1720,10 +1574,6 @@ impl AstNode for ast::ExprSet {
     }
 }
 impl AstNode for ast::ExprListComp {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprListComp)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1749,10 +1599,6 @@ impl AstNode for ast::ExprListComp {
     }
 }
 impl AstNode for ast::ExprSetComp {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprSetComp)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1778,10 +1624,6 @@ impl AstNode for ast::ExprSetComp {
     }
 }
 impl AstNode for ast::ExprDictComp {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprDictComp)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1810,10 +1652,6 @@ impl AstNode for ast::ExprDictComp {
     }
 }
 impl AstNode for ast::ExprGenerator {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprGenerator)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1839,10 +1677,6 @@ impl AstNode for ast::ExprGenerator {
     }
 }
 impl AstNode for ast::ExprAwait {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprAwait)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1860,10 +1694,6 @@ impl AstNode for ast::ExprAwait {
     }
 }
 impl AstNode for ast::ExprYield {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprYield)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1883,10 +1713,6 @@ impl AstNode for ast::ExprYield {
     }
 }
 impl AstNode for ast::ExprYieldFrom {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprYieldFrom)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1904,10 +1730,6 @@ impl AstNode for ast::ExprYieldFrom {
     }
 }
 impl AstNode for ast::ExprCompare {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprCompare)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1936,10 +1758,6 @@ impl AstNode for ast::ExprCompare {
     }
 }
 impl AstNode for ast::ExprCall {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprCall)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1962,10 +1780,6 @@ impl AstNode for ast::ExprCall {
     }
 }
 impl AstNode for ast::FStringFormatSpec {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::FStringFormatSpec)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -1984,10 +1798,6 @@ impl AstNode for ast::FStringFormatSpec {
     }
 }
 impl AstNode for ast::FStringExpressionElement {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::FStringExpressionElement)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2015,10 +1825,6 @@ impl AstNode for ast::FStringExpressionElement {
     }
 }
 impl AstNode for ast::FStringLiteralElement {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::FStringLiteralElement)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2034,10 +1840,6 @@ impl AstNode for ast::FStringLiteralElement {
     }
 }
 impl AstNode for ast::ExprFString {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprFString)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2065,10 +1867,6 @@ impl AstNode for ast::ExprFString {
     }
 }
 impl AstNode for ast::ExprStringLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprStringLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2089,10 +1887,6 @@ impl AstNode for ast::ExprStringLiteral {
     }
 }
 impl AstNode for ast::ExprBytesLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprBytesLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2113,10 +1907,6 @@ impl AstNode for ast::ExprBytesLiteral {
     }
 }
 impl AstNode for ast::ExprNumberLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprNumberLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2132,10 +1922,6 @@ impl AstNode for ast::ExprNumberLiteral {
     }
 }
 impl AstNode for ast::ExprBooleanLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprBooleanLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2151,10 +1937,6 @@ impl AstNode for ast::ExprBooleanLiteral {
     }
 }
 impl AstNode for ast::ExprNoneLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprNoneLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2170,10 +1952,6 @@ impl AstNode for ast::ExprNoneLiteral {
     }
 }
 impl AstNode for ast::ExprEllipsisLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprEllipsisLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2189,10 +1967,6 @@ impl AstNode for ast::ExprEllipsisLiteral {
     }
 }
 impl AstNode for ast::ExprAttribute {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprAttribute)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2216,10 +1990,6 @@ impl AstNode for ast::ExprAttribute {
     }
 }
 impl AstNode for ast::ExprSubscript {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprSubscript)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2243,10 +2013,6 @@ impl AstNode for ast::ExprSubscript {
     }
 }
 impl AstNode for ast::ExprStarred {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprStarred)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2269,10 +2035,6 @@ impl AstNode for ast::ExprStarred {
     }
 }
 impl AstNode for ast::ExprName {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprName)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2294,10 +2056,6 @@ impl AstNode for ast::ExprName {
     }
 }
 impl AstNode for ast::ExprList {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprList)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2322,10 +2080,6 @@ impl AstNode for ast::ExprList {
     }
 }
 impl AstNode for ast::ExprTuple {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprTuple)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2351,10 +2105,6 @@ impl AstNode for ast::ExprTuple {
     }
 }
 impl AstNode for ast::ExprSlice {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprSlice)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2385,10 +2135,6 @@ impl AstNode for ast::ExprSlice {
     }
 }
 impl AstNode for ast::ExprIpyEscapeCommand {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExprIpyEscapeCommand)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2410,10 +2156,6 @@ impl AstNode for ast::ExprIpyEscapeCommand {
     }
 }
 impl AstNode for ast::ExceptHandlerExceptHandler {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ExceptHandlerExceptHandler)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2439,10 +2181,6 @@ impl AstNode for ast::ExceptHandlerExceptHandler {
     }
 }
 impl AstNode for ast::PatternMatchValue {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchValue)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2460,10 +2198,6 @@ impl AstNode for ast::PatternMatchValue {
     }
 }
 impl AstNode for ast::PatternMatchSingleton {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchSingleton)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2481,10 +2215,6 @@ impl AstNode for ast::PatternMatchSingleton {
     }
 }
 impl AstNode for ast::PatternMatchSequence {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchSequence)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2504,10 +2234,6 @@ impl AstNode for ast::PatternMatchSequence {
     }
 }
 impl AstNode for ast::PatternMatchMapping {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchMapping)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2533,10 +2259,6 @@ impl AstNode for ast::PatternMatchMapping {
     }
 }
 impl AstNode for ast::PatternMatchClass {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchClass)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2559,10 +2281,6 @@ impl AstNode for ast::PatternMatchClass {
     }
 }
 impl AstNode for ast::PatternMatchStar {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchStar)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2580,10 +2298,6 @@ impl AstNode for ast::PatternMatchStar {
     }
 }
 impl AstNode for ast::PatternMatchAs {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchAs)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2607,10 +2321,6 @@ impl AstNode for ast::PatternMatchAs {
     }
 }
 impl AstNode for ast::PatternMatchOr {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternMatchOr)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2630,10 +2340,6 @@ impl AstNode for ast::PatternMatchOr {
     }
 }
 impl AstNode for PatternArguments {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternArguments)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2662,10 +2368,6 @@ impl AstNode for PatternArguments {
     }
 }
 impl AstNode for PatternKeyword {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::PatternKeyword)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2689,10 +2391,6 @@ impl AstNode for PatternKeyword {
 }
 
 impl AstNode for Comprehension {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Comprehension)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2721,10 +2419,6 @@ impl AstNode for Comprehension {
     }
 }
 impl AstNode for Arguments {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Arguments)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2746,10 +2440,6 @@ impl AstNode for Arguments {
     }
 }
 impl AstNode for Parameters {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Parameters)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2773,10 +2463,6 @@ impl AstNode for Parameters {
     }
 }
 impl AstNode for Parameter {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Parameter)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2801,10 +2487,6 @@ impl AstNode for Parameter {
     }
 }
 impl AstNode for ParameterWithDefault {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::ParameterWithDefault)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2829,10 +2511,6 @@ impl AstNode for ParameterWithDefault {
     }
 }
 impl AstNode for Keyword {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Keyword)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2855,10 +2533,6 @@ impl AstNode for Keyword {
     }
 }
 impl AstNode for Alias {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Alias)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2880,10 +2554,6 @@ impl AstNode for Alias {
     }
 }
 impl AstNode for WithItem {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::WithItem)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2910,10 +2580,6 @@ impl AstNode for WithItem {
     }
 }
 impl AstNode for MatchCase {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::MatchCase)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2942,10 +2608,6 @@ impl AstNode for MatchCase {
 }
 
 impl AstNode for Decorator {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Decorator)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2967,10 +2629,6 @@ impl AstNode for Decorator {
     }
 }
 impl AstNode for ast::TypeParams {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::TypeParams)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -2994,10 +2652,6 @@ impl AstNode for ast::TypeParams {
     }
 }
 impl AstNode for ast::TypeParamTypeVar {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::TypeParamTypeVar)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -3026,10 +2680,6 @@ impl AstNode for ast::TypeParamTypeVar {
     }
 }
 impl AstNode for ast::TypeParamTypeVarTuple {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::TypeParamTypeVarTuple)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -3054,10 +2704,6 @@ impl AstNode for ast::TypeParamTypeVarTuple {
     }
 }
 impl AstNode for ast::TypeParamParamSpec {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::TypeParamParamSpec)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -3082,10 +2728,6 @@ impl AstNode for ast::TypeParamParamSpec {
     }
 }
 impl AstNode for ast::FString {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::FString)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -3110,10 +2752,6 @@ impl AstNode for ast::FString {
     }
 }
 impl AstNode for ast::StringLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::StringLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -3129,10 +2767,6 @@ impl AstNode for ast::StringLiteral {
     }
 }
 impl AstNode for ast::BytesLiteral {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::BytesLiteral)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -3149,10 +2783,6 @@ impl AstNode for ast::BytesLiteral {
 }
 
 impl AstNode for ast::Identifier {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(kind, NodeKind::Identifier)
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         AnyNodeRef::from(self)
     }
@@ -3169,106 +2799,6 @@ impl AstNode for ast::Identifier {
 }
 
 impl AstNode for Stmt {
-    fn can_cast(kind: NodeKind) -> bool {
-        match kind {
-            NodeKind::StmtClassDef
-            | NodeKind::StmtReturn
-            | NodeKind::StmtDelete
-            | NodeKind::StmtTypeAlias
-            | NodeKind::StmtAssign
-            | NodeKind::StmtAugAssign
-            | NodeKind::StmtAnnAssign
-            | NodeKind::StmtFor
-            | NodeKind::StmtWhile
-            | NodeKind::StmtIf
-            | NodeKind::StmtWith
-            | NodeKind::StmtMatch
-            | NodeKind::StmtRaise
-            | NodeKind::StmtTry
-            | NodeKind::StmtAssert
-            | NodeKind::StmtImport
-            | NodeKind::StmtImportFrom
-            | NodeKind::StmtGlobal
-            | NodeKind::StmtNonlocal
-            | NodeKind::StmtIpyEscapeCommand
-            | NodeKind::StmtExpr
-            | NodeKind::StmtPass
-            | NodeKind::StmtBreak
-            | NodeKind::StmtContinue => true,
-            NodeKind::ExprBoolOp
-            | NodeKind::ModModule
-            | NodeKind::ModInteractive
-            | NodeKind::ModExpression
-            | NodeKind::ModFunctionType
-            | NodeKind::StmtFunctionDef
-            | NodeKind::ExprNamed
-            | NodeKind::ExprBinOp
-            | NodeKind::ExprUnaryOp
-            | NodeKind::ExprLambda
-            | NodeKind::ExprIf
-            | NodeKind::ExprDict
-            | NodeKind::ExprSet
-            | NodeKind::ExprListComp
-            | NodeKind::ExprSetComp
-            | NodeKind::ExprDictComp
-            | NodeKind::ExprGenerator
-            | NodeKind::ExprAwait
-            | NodeKind::ExprYield
-            | NodeKind::ExprYieldFrom
-            | NodeKind::ExprCompare
-            | NodeKind::ExprCall
-            | NodeKind::FStringExpressionElement
-            | NodeKind::FStringLiteralElement
-            | NodeKind::FStringFormatSpec
-            | NodeKind::ExprFString
-            | NodeKind::ExprStringLiteral
-            | NodeKind::ExprBytesLiteral
-            | NodeKind::ExprNumberLiteral
-            | NodeKind::ExprBooleanLiteral
-            | NodeKind::ExprNoneLiteral
-            | NodeKind::ExprEllipsisLiteral
-            | NodeKind::ExprAttribute
-            | NodeKind::ExprSubscript
-            | NodeKind::ExprStarred
-            | NodeKind::ExprName
-            | NodeKind::ExprList
-            | NodeKind::ExprTuple
-            | NodeKind::ExprSlice
-            | NodeKind::ExprIpyEscapeCommand
-            | NodeKind::ExceptHandlerExceptHandler
-            | NodeKind::PatternMatchValue
-            | NodeKind::PatternMatchSingleton
-            | NodeKind::PatternMatchSequence
-            | NodeKind::PatternMatchMapping
-            | NodeKind::PatternMatchClass
-            | NodeKind::PatternMatchStar
-            | NodeKind::PatternMatchAs
-            | NodeKind::PatternMatchOr
-            | NodeKind::PatternArguments
-            | NodeKind::PatternKeyword
-            | NodeKind::TypeIgnoreTypeIgnore
-            | NodeKind::Comprehension
-            | NodeKind::Arguments
-            | NodeKind::Parameters
-            | NodeKind::Parameter
-            | NodeKind::ParameterWithDefault
-            | NodeKind::Keyword
-            | NodeKind::Alias
-            | NodeKind::WithItem
-            | NodeKind::MatchCase
-            | NodeKind::Decorator
-            | NodeKind::ElifElseClause
-            | NodeKind::TypeParams
-            | NodeKind::TypeParamTypeVar
-            | NodeKind::TypeParamTypeVarTuple
-            | NodeKind::TypeParamParamSpec
-            | NodeKind::FString
-            | NodeKind::StringLiteral
-            | NodeKind::Identifier
-            | NodeKind::BytesLiteral => false,
-        }
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         match self {
             Stmt::FunctionDef(stmt) => stmt.as_any_node_ref(),
@@ -3364,15 +2894,6 @@ impl AstNode for Stmt {
 }
 
 impl AstNode for TypeParam {
-    fn can_cast(kind: NodeKind) -> bool {
-        matches!(
-            kind,
-            NodeKind::TypeParamTypeVar
-                | NodeKind::TypeParamTypeVarTuple
-                | NodeKind::TypeParamParamSpec
-        )
-    }
-
     fn as_any_node_ref(&self) -> AnyNodeRef {
         match self {
             TypeParam::TypeVar(node) => node.as_any_node_ref(),
