@@ -1,5 +1,5 @@
 use ruff_formatter::write;
-use ruff_python_ast::ModModule;
+use ruff_python_ast::{ModModule, Node};
 use ruff_python_trivia::lines_after;
 
 use crate::prelude::*;
@@ -9,9 +9,9 @@ use crate::FormatNodeRule;
 #[derive(Default)]
 pub struct FormatModModule;
 
-impl<'a> FormatNodeRule<'a, &'a ModModule> for FormatModModule {
-    fn fmt_fields(&self, item: &'a ModModule, f: &mut PyFormatter) -> FormatResult<()> {
-        let ModModule { range, body } = item;
+impl<'a> FormatNodeRule<'a, Node<'a, &'a ModModule>> for FormatModModule {
+    fn fmt_fields(&self, item: Node<'a, &'a ModModule>, f: &mut PyFormatter) -> FormatResult<()> {
+        let ModModule { range, body } = item.as_ref();
 
         if body.is_empty() {
             // Only preserve an empty line if the source contains an empty line too.
