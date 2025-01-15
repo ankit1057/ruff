@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use bitflags::bitflags;
 
-use ruff_python_ast::{Mod, ModExpression, ModModule};
+use ruff_python_ast::{AstBuilder, ModExpression, ModId, ModModule};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
 use crate::parser::expression::ExpressionContext;
@@ -47,6 +47,9 @@ pub(crate) struct Parser<'src> {
 
     /// The start offset in the source code from which to start parsing at.
     start_offset: TextSize,
+
+    /// The builder that we will use to construct the parsed AST
+    ast: AstBuilder,
 }
 
 impl<'src> Parser<'src> {
@@ -68,14 +71,21 @@ impl<'src> Parser<'src> {
             prev_token_end: TextSize::new(0),
             start_offset,
             current_token_id: TokenId::default(),
+            ast: AstBuilder::default(),
         }
     }
 
     /// Consumes the [`Parser`] and returns the parsed [`Parsed`].
-    pub(crate) fn parse(mut self) -> Parsed<Mod> {
+    pub(crate) fn parse(mut self) -> Parsed<ModId> {
         let syntax = match self.mode {
-            Mode::Expression => Mod::Expression(self.parse_single_expression()),
-            Mode::Module | Mode::Ipython => Mod::Module(self.parse_module()),
+            Mode::Expression => {
+                let expr = self.parse_single_expression();
+                self.ast.add_mod_expression(expr)
+            }
+            Mode::Module | Mode::Ipython => {
+                let module = self.parse_module();
+                self.ast.add_mod_module(module)
+            }
         };
 
         self.finish(syntax)
@@ -138,7 +148,7 @@ impl<'src> Parser<'src> {
         }
     }
 
-    fn finish(self, syntax: Mod) -> Parsed<Mod> {
+    fn finish(self, syntax: ModId) -> Parsed<ModId> {
         assert_eq!(
             self.current_token_kind(),
             TokenKind::EndOfFile,
@@ -154,6 +164,7 @@ impl<'src> Parser<'src> {
         // always results in a parse error.
         if lex_errors.is_empty() {
             return Parsed {
+                ast: self.ast.build(),
                 syntax,
                 tokens: Tokens::new(tokens),
                 errors: parse_errors,
@@ -185,6 +196,7 @@ impl<'src> Parser<'src> {
         merged.extend(lex_errors.map(ParseError::from));
 
         Parsed {
+            ast: self.ast.build(),
             syntax,
             tokens: Tokens::new(tokens),
             errors: merged,

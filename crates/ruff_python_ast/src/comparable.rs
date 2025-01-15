@@ -15,10 +15,11 @@
 //! an implicit concatenation of string literals, as these expressions are considered to
 //! have the same shape in that they evaluate to the same value.
 
-use crate as ast;
-use crate::{Expr, Number};
 use std::borrow::Cow;
 use std::hash::Hash;
+
+use crate as ast;
+use crate::{Expr, Node, Number};
 
 #[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum ComparableBoolOp {
@@ -1652,8 +1653,8 @@ pub struct ComparableModExpression<'a> {
     body: Box<ComparableExpr<'a>>,
 }
 
-impl<'a> From<&'a ast::Mod> for ComparableMod<'a> {
-    fn from(mod_: &'a ast::Mod) -> Self {
+impl<'a> From<ast::Mod<'a>> for ComparableMod<'a> {
+    fn from(mod_: ast::Mod<'a>) -> Self {
         match mod_ {
             ast::Mod::Module(module) => Self::Module(module.into()),
             ast::Mod::Expression(expr) => Self::Expression(expr.into()),
@@ -1661,16 +1662,16 @@ impl<'a> From<&'a ast::Mod> for ComparableMod<'a> {
     }
 }
 
-impl<'a> From<&'a ast::ModModule> for ComparableModModule<'a> {
-    fn from(module: &'a ast::ModModule) -> Self {
+impl<'a> From<Node<'a, &'a ast::ModModule>> for ComparableModModule<'a> {
+    fn from(module: Node<'a, &'a ast::ModModule>) -> Self {
         Self {
             body: module.body.iter().map(Into::into).collect(),
         }
     }
 }
 
-impl<'a> From<&'a ast::ModExpression> for ComparableModExpression<'a> {
-    fn from(expr: &'a ast::ModExpression) -> Self {
+impl<'a> From<Node<'a, &'a ast::ModExpression>> for ComparableModExpression<'a> {
+    fn from(expr: Node<'a, &'a ast::ModExpression>) -> Self {
         Self {
             body: (&expr.body).into(),
         }

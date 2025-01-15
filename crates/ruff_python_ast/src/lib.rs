@@ -1,17 +1,20 @@
 use std::ffi::OsStr;
 use std::path::Path;
 
+pub use ast::{Ast, AstBuilder, Node};
 pub use expression::*;
 pub use int::*;
 pub use node::{AnyNodeRef, NodeKind};
 pub use nodes::*;
 
+pub mod ast;
 pub mod comparable;
 pub mod docstrings;
 mod expression;
 pub mod helpers;
 pub mod identifier;
 mod int;
+pub(crate) mod macros;
 pub mod name;
 mod node;
 mod nodes;

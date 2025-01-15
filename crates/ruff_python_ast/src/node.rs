@@ -1,29 +1,29 @@
 use crate::visitor::source_order::SourceOrderVisitor;
 use crate::{
     self as ast, Alias, AnyParameterRef, ArgOrKeyword, Arguments, Comprehension, Decorator,
-    ExceptHandler, Expr, FStringElement, Keyword, MatchCase, Mod, Parameter, ParameterWithDefault,
-    Parameters, Pattern, PatternArguments, PatternKeyword, Stmt, TypeParam, TypeParamParamSpec,
-    TypeParamTypeVar, TypeParamTypeVarTuple, TypeParams, WithItem,
+    ExceptHandler, Expr, FStringElement, Keyword, MatchCase, Mod, Node, Parameter,
+    ParameterWithDefault, Parameters, Pattern, PatternArguments, PatternKeyword, Stmt, TypeParam,
+    TypeParamParamSpec, TypeParamTypeVar, TypeParamTypeVarTuple, TypeParams, WithItem,
 };
 use ruff_text_size::{Ranged, TextRange};
 use std::ptr::NonNull;
 
-impl ast::ModModule {
-    pub(crate) fn visit_source_order<'a, V>(&'a self, visitor: &mut V)
+impl<'a> Node<'a, &'a ast::ModModule> {
+    pub(crate) fn visit_source_order<V>(self, visitor: &mut V)
     where
         V: SourceOrderVisitor<'a> + ?Sized,
     {
-        let ast::ModModule { body, range: _ } = self;
+        let ast::ModModule { body, range: _ } = self.as_ref();
         visitor.visit_body(body);
     }
 }
 
-impl ast::ModExpression {
-    pub(crate) fn visit_source_order<'a, V>(&'a self, visitor: &mut V)
+impl<'a> Node<'a, &'a ast::ModExpression> {
+    pub(crate) fn visit_source_order<V>(self, visitor: &mut V)
     where
         V: SourceOrderVisitor<'a> + ?Sized,
     {
-        let ast::ModExpression { body, range: _ } = self;
+        let ast::ModExpression { body, range: _ } = self.as_ref();
         visitor.visit_expr(body);
     }
 }
