@@ -13,8 +13,8 @@ use crate::string::StringLikeExtensions;
 #[derive(Default)]
 pub struct FormatExprFString;
 
-impl FormatNodeRule<ExprFString> for FormatExprFString {
-    fn fmt_fields(&self, item: &ExprFString, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprFString> for FormatExprFString {
+    fn fmt_fields(&self, item: &'a ExprFString, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprFString { value, .. } = item;
 
         if let [f_string_part] = value.as_slice() {

@@ -9,8 +9,8 @@ use crate::FormatNodeRule;
 #[derive(Default)]
 pub struct FormatModModule;
 
-impl FormatNodeRule<ModModule> for FormatModModule {
-    fn fmt_fields(&self, item: &ModModule, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ModModule> for FormatModModule {
+    fn fmt_fields(&self, item: &'a ModModule, f: &mut PyFormatter) -> FormatResult<()> {
         let ModModule { range, body } = item;
 
         if body.is_empty() {

@@ -9,8 +9,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtRaise;
 
-impl FormatNodeRule<StmtRaise> for FormatStmtRaise {
-    fn fmt_fields(&self, item: &StmtRaise, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtRaise> for FormatStmtRaise {
+    fn fmt_fields(&self, item: &'a StmtRaise, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtRaise {
             range: _,
             exc,

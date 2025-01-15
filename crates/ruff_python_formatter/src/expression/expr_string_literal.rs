@@ -26,8 +26,8 @@ impl FormatRuleWithOptions<ExprStringLiteral, PyFormatContext<'_>> for FormatExp
     }
 }
 
-impl FormatNodeRule<ExprStringLiteral> for FormatExprStringLiteral {
-    fn fmt_fields(&self, item: &ExprStringLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprStringLiteral> for FormatExprStringLiteral {
+    fn fmt_fields(&self, item: &'a ExprStringLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprStringLiteral { value, .. } = item;
 
         if let [string_literal] = value.as_slice() {

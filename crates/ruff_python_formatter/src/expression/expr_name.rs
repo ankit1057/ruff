@@ -8,8 +8,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprName;
 
-impl FormatNodeRule<ExprName> for FormatExprName {
-    fn fmt_fields(&self, item: &ExprName, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprName> for FormatExprName {
+    fn fmt_fields(&self, item: &'a ExprName, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprName {
             id: _,
             range,

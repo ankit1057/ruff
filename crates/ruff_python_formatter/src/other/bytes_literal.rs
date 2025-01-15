@@ -6,8 +6,8 @@ use crate::string::StringNormalizer;
 #[derive(Default)]
 pub struct FormatBytesLiteral;
 
-impl FormatNodeRule<BytesLiteral> for FormatBytesLiteral {
-    fn fmt_fields(&self, item: &BytesLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a BytesLiteral> for FormatBytesLiteral {
+    fn fmt_fields(&self, item: &'a BytesLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         StringNormalizer::from_context(f.context())
             .normalize(item.into())
             .fmt(f)

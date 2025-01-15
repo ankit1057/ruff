@@ -12,8 +12,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatPatternMatchSequence;
 
-impl FormatNodeRule<PatternMatchSequence> for FormatPatternMatchSequence {
-    fn fmt_fields(&self, item: &PatternMatchSequence, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a PatternMatchSequence> for FormatPatternMatchSequence {
+    fn fmt_fields(&self, item: &'a PatternMatchSequence, f: &mut PyFormatter) -> FormatResult<()> {
         let PatternMatchSequence { patterns, range } = item;
 
         let comments = f.context().comments().clone();

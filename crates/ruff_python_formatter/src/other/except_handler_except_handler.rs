@@ -33,10 +33,10 @@ impl FormatRuleWithOptions<ExceptHandlerExceptHandler, PyFormatContext<'_>>
     }
 }
 
-impl FormatNodeRule<ExceptHandlerExceptHandler> for FormatExceptHandlerExceptHandler {
+impl<'a> FormatNodeRule<'a, &'a ExceptHandlerExceptHandler> for FormatExceptHandlerExceptHandler {
     fn fmt_fields(
         &self,
-        item: &ExceptHandlerExceptHandler,
+        item: &'a ExceptHandlerExceptHandler,
         f: &mut PyFormatter,
     ) -> FormatResult<()> {
         let except_handler_kind = self.except_handler_kind;

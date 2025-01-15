@@ -11,9 +11,9 @@ use crate::string::StringLikeExtensions;
 #[derive(Default)]
 pub struct FormatExprCompare;
 
-impl FormatNodeRule<ExprCompare> for FormatExprCompare {
+impl<'a> FormatNodeRule<'a, &'a ExprCompare> for FormatExprCompare {
     #[inline]
-    fn fmt_fields(&self, item: &ExprCompare, f: &mut PyFormatter) -> FormatResult<()> {
+    fn fmt_fields(&self, item: &'a ExprCompare, f: &mut PyFormatter) -> FormatResult<()> {
         BinaryLike::Compare(item).fmt(f)
     }
 }

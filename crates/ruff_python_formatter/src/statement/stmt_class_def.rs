@@ -14,8 +14,8 @@ use crate::statement::suite::SuiteKind;
 #[derive(Default)]
 pub struct FormatStmtClassDef;
 
-impl FormatNodeRule<StmtClassDef> for FormatStmtClassDef {
-    fn fmt_fields(&self, item: &StmtClassDef, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtClassDef> for FormatStmtClassDef {
+    fn fmt_fields(&self, item: &'a StmtClassDef, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtClassDef {
             range: _,
             name,

@@ -57,8 +57,8 @@ impl<'ast> AsFormat<PyFormatContext<'ast>> for ExceptHandler {
     }
 }
 
-impl FormatNodeRule<StmtTry> for FormatStmtTry {
-    fn fmt_fields(&self, item: &StmtTry, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtTry> for FormatStmtTry {
+    fn fmt_fields(&self, item: &'a StmtTry, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtTry {
             body,
             handlers,

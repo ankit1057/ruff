@@ -7,8 +7,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatPatternMatchValue;
 
-impl FormatNodeRule<PatternMatchValue> for FormatPatternMatchValue {
-    fn fmt_fields(&self, item: &PatternMatchValue, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a PatternMatchValue> for FormatPatternMatchValue {
+    fn fmt_fields(&self, item: &'a PatternMatchValue, f: &mut PyFormatter) -> FormatResult<()> {
         let PatternMatchValue { value, range: _ } = item;
         value.format().with_options(Parentheses::Never).fmt(f)
     }

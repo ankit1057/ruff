@@ -8,8 +8,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprListComp;
 
-impl FormatNodeRule<ExprListComp> for FormatExprListComp {
-    fn fmt_fields(&self, item: &ExprListComp, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprListComp> for FormatExprListComp {
+    fn fmt_fields(&self, item: &'a ExprListComp, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprListComp {
             range: _,
             elt,

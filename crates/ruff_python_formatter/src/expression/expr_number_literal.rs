@@ -10,8 +10,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprNumberLiteral;
 
-impl FormatNodeRule<ExprNumberLiteral> for FormatExprNumberLiteral {
-    fn fmt_fields(&self, item: &ExprNumberLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprNumberLiteral> for FormatExprNumberLiteral {
+    fn fmt_fields(&self, item: &'a ExprNumberLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         match item.value {
             Number::Int(_) => {
                 let content = f.context().source().slice(item);

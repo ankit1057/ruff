@@ -11,8 +11,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprAwait;
 
-impl FormatNodeRule<ExprAwait> for FormatExprAwait {
-    fn fmt_fields(&self, item: &ExprAwait, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprAwait> for FormatExprAwait {
+    fn fmt_fields(&self, item: &'a ExprAwait, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprAwait { range: _, value } = item;
 
         write!(

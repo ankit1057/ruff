@@ -11,8 +11,8 @@ use crate::string::{implicit::FormatImplicitConcatenatedString, StringLikeExtens
 #[derive(Default)]
 pub struct FormatExprBytesLiteral;
 
-impl FormatNodeRule<ExprBytesLiteral> for FormatExprBytesLiteral {
-    fn fmt_fields(&self, item: &ExprBytesLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprBytesLiteral> for FormatExprBytesLiteral {
+    fn fmt_fields(&self, item: &'a ExprBytesLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprBytesLiteral { value, .. } = item;
 
         if let [bytes_literal] = value.as_slice() {

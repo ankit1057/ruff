@@ -9,8 +9,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatDecorator;
 
-impl FormatNodeRule<Decorator> for FormatDecorator {
-    fn fmt_fields(&self, item: &Decorator, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a Decorator> for FormatDecorator {
+    fn fmt_fields(&self, item: &'a Decorator, f: &mut PyFormatter) -> FormatResult<()> {
         let Decorator {
             expression,
             range: _,

@@ -9,8 +9,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatPatternMatchAs;
 
-impl FormatNodeRule<PatternMatchAs> for FormatPatternMatchAs {
-    fn fmt_fields(&self, item: &PatternMatchAs, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a PatternMatchAs> for FormatPatternMatchAs {
+    fn fmt_fields(&self, item: &'a PatternMatchAs, f: &mut PyFormatter) -> FormatResult<()> {
         let PatternMatchAs {
             range: _,
             pattern,

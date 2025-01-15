@@ -14,8 +14,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatPatternMatchMapping;
 
-impl FormatNodeRule<PatternMatchMapping> for FormatPatternMatchMapping {
-    fn fmt_fields(&self, item: &PatternMatchMapping, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a PatternMatchMapping> for FormatPatternMatchMapping {
+    fn fmt_fields(&self, item: &'a PatternMatchMapping, f: &mut PyFormatter) -> FormatResult<()> {
         let PatternMatchMapping {
             keys,
             patterns,

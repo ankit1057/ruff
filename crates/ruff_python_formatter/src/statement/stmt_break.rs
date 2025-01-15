@@ -6,8 +6,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtBreak;
 
-impl FormatNodeRule<StmtBreak> for FormatStmtBreak {
-    fn fmt_fields(&self, _item: &StmtBreak, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtBreak> for FormatStmtBreak {
+    fn fmt_fields(&self, _item: &'a StmtBreak, f: &mut PyFormatter) -> FormatResult<()> {
         token("break").fmt(f)
     }
 

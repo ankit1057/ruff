@@ -110,8 +110,8 @@ impl FormatRuleWithOptions<ExprTuple, PyFormatContext<'_>> for FormatExprTuple {
     }
 }
 
-impl FormatNodeRule<ExprTuple> for FormatExprTuple {
-    fn fmt_fields(&self, item: &ExprTuple, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprTuple> for FormatExprTuple {
+    fn fmt_fields(&self, item: &'a ExprTuple, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprTuple {
             elts,
             ctx: _,

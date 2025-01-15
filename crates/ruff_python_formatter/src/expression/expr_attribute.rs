@@ -25,8 +25,8 @@ impl FormatRuleWithOptions<ExprAttribute, PyFormatContext<'_>> for FormatExprAtt
     }
 }
 
-impl FormatNodeRule<ExprAttribute> for FormatExprAttribute {
-    fn fmt_fields(&self, item: &ExprAttribute, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprAttribute> for FormatExprAttribute {
+    fn fmt_fields(&self, item: &'a ExprAttribute, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprAttribute {
             value,
             range: _,

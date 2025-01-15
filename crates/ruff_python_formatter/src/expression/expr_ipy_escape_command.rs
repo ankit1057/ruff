@@ -7,8 +7,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprIpyEscapeCommand;
 
-impl FormatNodeRule<ExprIpyEscapeCommand> for FormatExprIpyEscapeCommand {
-    fn fmt_fields(&self, item: &ExprIpyEscapeCommand, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprIpyEscapeCommand> for FormatExprIpyEscapeCommand {
+    fn fmt_fields(&self, item: &'a ExprIpyEscapeCommand, f: &mut PyFormatter) -> FormatResult<()> {
         source_text_slice(item.range()).fmt(f)
     }
 }

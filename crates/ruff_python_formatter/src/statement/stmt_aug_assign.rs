@@ -14,8 +14,8 @@ use crate::{AsFormat, FormatNodeRule};
 #[derive(Default)]
 pub struct FormatStmtAugAssign;
 
-impl FormatNodeRule<StmtAugAssign> for FormatStmtAugAssign {
-    fn fmt_fields(&self, item: &StmtAugAssign, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtAugAssign> for FormatStmtAugAssign {
+    fn fmt_fields(&self, item: &'a StmtAugAssign, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtAugAssign {
             target,
             op,

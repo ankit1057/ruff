@@ -13,8 +13,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtAnnAssign;
 
-impl FormatNodeRule<StmtAnnAssign> for FormatStmtAnnAssign {
-    fn fmt_fields(&self, item: &StmtAnnAssign, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtAnnAssign> for FormatStmtAnnAssign {
+    fn fmt_fields(&self, item: &'a StmtAnnAssign, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtAnnAssign {
             range: _,
             target,

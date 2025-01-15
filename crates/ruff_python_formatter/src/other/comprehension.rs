@@ -11,8 +11,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatComprehension;
 
-impl FormatNodeRule<Comprehension> for FormatComprehension {
-    fn fmt_fields(&self, item: &Comprehension, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a Comprehension> for FormatComprehension {
+    fn fmt_fields(&self, item: &'a Comprehension, f: &mut PyFormatter) -> FormatResult<()> {
         struct Spacer<'a> {
             expression: &'a Expr,
             preserve_parentheses: bool,

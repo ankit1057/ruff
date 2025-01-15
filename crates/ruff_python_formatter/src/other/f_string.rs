@@ -15,8 +15,8 @@ use super::f_string_element::FormatFStringElement;
 #[derive(Default)]
 pub struct FormatFString;
 
-impl FormatNodeRule<FString> for FormatFString {
-    fn fmt_fields(&self, item: &FString, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a FString> for FormatFString {
+    fn fmt_fields(&self, item: &'a FString, f: &mut PyFormatter) -> FormatResult<()> {
         let normalizer = StringNormalizer::from_context(f.context());
 
         let string_kind = normalizer.choose_quotes(item.into()).flags();

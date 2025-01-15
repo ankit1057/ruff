@@ -27,8 +27,8 @@ impl Format<PyFormatContext<'_>> for ExprTupleWithoutParentheses<'_> {
 #[derive(Default)]
 pub struct FormatStmtFor;
 
-impl FormatNodeRule<StmtFor> for FormatStmtFor {
-    fn fmt_fields(&self, item: &StmtFor, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtFor> for FormatStmtFor {
+    fn fmt_fields(&self, item: &'a StmtFor, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtFor {
             is_async,
             target,

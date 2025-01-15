@@ -13,8 +13,8 @@ use ruff_python_ast::{NodeKind, StmtFunctionDef};
 #[derive(Default)]
 pub struct FormatStmtFunctionDef;
 
-impl FormatNodeRule<StmtFunctionDef> for FormatStmtFunctionDef {
-    fn fmt_fields(&self, item: &StmtFunctionDef, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtFunctionDef> for FormatStmtFunctionDef {
+    fn fmt_fields(&self, item: &'a StmtFunctionDef, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtFunctionDef {
             decorator_list,
             body,

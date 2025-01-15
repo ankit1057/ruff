@@ -7,8 +7,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatPatternMatchSingleton;
 
-impl FormatNodeRule<PatternMatchSingleton> for FormatPatternMatchSingleton {
-    fn fmt_fields(&self, item: &PatternMatchSingleton, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a PatternMatchSingleton> for FormatPatternMatchSingleton {
+    fn fmt_fields(&self, item: &'a PatternMatchSingleton, f: &mut PyFormatter) -> FormatResult<()> {
         match item.value {
             Singleton::None => token("None").fmt(f),
             Singleton::True => token("True").fmt(f),

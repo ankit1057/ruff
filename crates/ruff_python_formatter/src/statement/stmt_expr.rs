@@ -11,8 +11,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtExpr;
 
-impl FormatNodeRule<StmtExpr> for FormatStmtExpr {
-    fn fmt_fields(&self, item: &StmtExpr, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtExpr> for FormatStmtExpr {
+    fn fmt_fields(&self, item: &'a StmtExpr, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtExpr { value, .. } = item;
 
         if is_arithmetic_like(value) {

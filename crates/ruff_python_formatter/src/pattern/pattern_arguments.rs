@@ -1,5 +1,4 @@
 use ruff_formatter::write;
-use ruff_python_ast::AstNode;
 use ruff_python_ast::{Pattern, PatternArguments};
 use ruff_python_trivia::{SimpleTokenKind, SimpleTokenizer};
 use ruff_text_size::{Ranged, TextRange, TextSize};
@@ -10,8 +9,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatPatternArguments;
 
-impl FormatNodeRule<PatternArguments> for FormatPatternArguments {
-    fn fmt_fields(&self, item: &PatternArguments, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a PatternArguments> for FormatPatternArguments {
+    fn fmt_fields(&self, item: &'a PatternArguments, f: &mut PyFormatter) -> FormatResult<()> {
         // If there are no arguments, all comments are dangling:
         // ```python
         // case Point2D(  # dangling
@@ -63,7 +62,7 @@ impl FormatNodeRule<PatternArguments> for FormatPatternArguments {
         // )
         // ```
         let comments = f.context().comments().clone();
-        let dangling_comments = comments.dangling(item.as_any_node_ref());
+        let dangling_comments = comments.dangling(item);
 
         write!(
             f,

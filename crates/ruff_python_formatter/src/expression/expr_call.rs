@@ -23,8 +23,8 @@ impl FormatRuleWithOptions<ExprCall, PyFormatContext<'_>> for FormatExprCall {
     }
 }
 
-impl FormatNodeRule<ExprCall> for FormatExprCall {
-    fn fmt_fields(&self, item: &ExprCall, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprCall> for FormatExprCall {
+    fn fmt_fields(&self, item: &'a ExprCall, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprCall {
             range: _,
             func,

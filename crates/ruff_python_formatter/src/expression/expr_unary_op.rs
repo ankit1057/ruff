@@ -11,8 +11,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprUnaryOp;
 
-impl FormatNodeRule<ExprUnaryOp> for FormatExprUnaryOp {
-    fn fmt_fields(&self, item: &ExprUnaryOp, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprUnaryOp> for FormatExprUnaryOp {
+    fn fmt_fields(&self, item: &'a ExprUnaryOp, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprUnaryOp {
             range: _,
             op,

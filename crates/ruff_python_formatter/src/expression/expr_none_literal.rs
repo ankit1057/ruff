@@ -7,8 +7,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprNoneLiteral;
 
-impl FormatNodeRule<ExprNoneLiteral> for FormatExprNoneLiteral {
-    fn fmt_fields(&self, _item: &ExprNoneLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprNoneLiteral> for FormatExprNoneLiteral {
+    fn fmt_fields(&self, _item: &'a ExprNoneLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         token("None").fmt(f)
     }
 }

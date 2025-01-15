@@ -11,8 +11,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprDict;
 
-impl FormatNodeRule<ExprDict> for FormatExprDict {
-    fn fmt_fields(&self, item: &ExprDict, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprDict> for FormatExprDict {
+    fn fmt_fields(&self, item: &'a ExprDict, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprDict { range: _, items } = item;
 
         let comments = f.context().comments().clone();

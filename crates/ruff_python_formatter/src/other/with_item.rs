@@ -91,8 +91,8 @@ impl FormatRuleWithOptions<WithItem, PyFormatContext<'_>> for FormatWithItem {
     }
 }
 
-impl FormatNodeRule<WithItem> for FormatWithItem {
-    fn fmt_fields(&self, item: &WithItem, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a WithItem> for FormatWithItem {
+    fn fmt_fields(&self, item: &'a WithItem, f: &mut PyFormatter) -> FormatResult<()> {
         let WithItem {
             range: _,
             context_expr,

@@ -12,8 +12,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatPatternMatchOr;
 
-impl FormatNodeRule<PatternMatchOr> for FormatPatternMatchOr {
-    fn fmt_fields(&self, item: &PatternMatchOr, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a PatternMatchOr> for FormatPatternMatchOr {
+    fn fmt_fields(&self, item: &'a PatternMatchOr, f: &mut PyFormatter) -> FormatResult<()> {
         let PatternMatchOr { range: _, patterns } = item;
         let inner = format_with(|f: &mut PyFormatter| {
             let mut patterns = patterns.iter();

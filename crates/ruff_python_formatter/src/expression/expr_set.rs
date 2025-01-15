@@ -8,8 +8,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprSet;
 
-impl FormatNodeRule<ExprSet> for FormatExprSet {
-    fn fmt_fields(&self, item: &ExprSet, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprSet> for FormatExprSet {
+    fn fmt_fields(&self, item: &'a ExprSet, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprSet { range: _, elts } = item;
         // That would be a dict expression
         assert!(!elts.is_empty());

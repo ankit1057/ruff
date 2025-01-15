@@ -1,5 +1,4 @@
 use ruff_formatter::write;
-use ruff_python_ast::AstNode;
 use ruff_python_ast::StmtImportFrom;
 use ruff_text_size::Ranged;
 
@@ -13,8 +12,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatStmtImportFrom;
 
-impl FormatNodeRule<StmtImportFrom> for FormatStmtImportFrom {
-    fn fmt_fields(&self, item: &StmtImportFrom, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtImportFrom> for FormatStmtImportFrom {
+    fn fmt_fields(&self, item: &'a StmtImportFrom, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtImportFrom {
             module,
             names,
@@ -62,7 +61,7 @@ impl FormatNodeRule<StmtImportFrom> for FormatStmtImportFrom {
         // )
         // ```
         let comments = f.context().comments().clone();
-        let parenthesized_comments = comments.dangling(item.as_any_node_ref());
+        let parenthesized_comments = comments.dangling(item);
 
         if parenthesized_comments.is_empty() {
             parenthesize_if_expands(&names).fmt(f)

@@ -42,8 +42,8 @@ impl FormatRuleWithOptions<ExprIf, PyFormatContext<'_>> for FormatExprIf {
     }
 }
 
-impl FormatNodeRule<ExprIf> for FormatExprIf {
-    fn fmt_fields(&self, item: &ExprIf, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprIf> for FormatExprIf {
+    fn fmt_fields(&self, item: &'a ExprIf, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprIf {
             range: _,
             test,

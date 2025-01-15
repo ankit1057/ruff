@@ -1,6 +1,5 @@
 use ruff_formatter::{format_args, write, FormatContext, FormatError};
-use ruff_python_ast::StmtWith;
-use ruff_python_ast::{AstNode, WithItem};
+use ruff_python_ast::{StmtWith, WithItem};
 use ruff_python_trivia::{SimpleTokenKind, SimpleTokenizer};
 use ruff_text_size::{Ranged, TextRange};
 
@@ -20,8 +19,8 @@ use crate::PythonVersion;
 #[derive(Default)]
 pub struct FormatStmtWith;
 
-impl FormatNodeRule<StmtWith> for FormatStmtWith {
-    fn fmt_fields(&self, with_stmt: &StmtWith, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtWith> for FormatStmtWith {
+    fn fmt_fields(&self, with_stmt: &'a StmtWith, f: &mut PyFormatter) -> FormatResult<()> {
         // The `with` statement can have one dangling comment on the open parenthesis, like:
         // ```python
         // with (  # comment
@@ -36,7 +35,7 @@ impl FormatNodeRule<StmtWith> for FormatStmtWith {
         //     ...
         // ```
         let comments = f.context().comments().clone();
-        let dangling_comments = comments.dangling(with_stmt.as_any_node_ref());
+        let dangling_comments = comments.dangling(with_stmt);
         let partition_point = dangling_comments.partition_point(|comment| {
             with_stmt
                 .items

@@ -10,8 +10,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtTypeAlias;
 
-impl FormatNodeRule<StmtTypeAlias> for FormatStmtTypeAlias {
-    fn fmt_fields(&self, item: &StmtTypeAlias, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtTypeAlias> for FormatStmtTypeAlias {
+    fn fmt_fields(&self, item: &'a StmtTypeAlias, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtTypeAlias {
             name,
             type_params,

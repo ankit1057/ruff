@@ -33,8 +33,8 @@ pub struct FormatExprGenerator {
     parentheses: GeneratorExpParentheses,
 }
 
-impl FormatNodeRule<ExprGenerator> for FormatExprGenerator {
-    fn fmt_fields(&self, item: &ExprGenerator, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprGenerator> for FormatExprGenerator {
+    fn fmt_fields(&self, item: &'a ExprGenerator, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprGenerator {
             range: _,
             elt,

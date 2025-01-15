@@ -9,9 +9,9 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprBoolOp;
 
-impl FormatNodeRule<ExprBoolOp> for FormatExprBoolOp {
+impl<'a> FormatNodeRule<'a, &'a ExprBoolOp> for FormatExprBoolOp {
     #[inline]
-    fn fmt_fields(&self, item: &ExprBoolOp, f: &mut PyFormatter) -> FormatResult<()> {
+    fn fmt_fields(&self, item: &'a ExprBoolOp, f: &mut PyFormatter) -> FormatResult<()> {
         BinaryLike::Bool(item).fmt(f)
     }
 }

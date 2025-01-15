@@ -7,8 +7,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprBooleanLiteral;
 
-impl FormatNodeRule<ExprBooleanLiteral> for FormatExprBooleanLiteral {
-    fn fmt_fields(&self, item: &ExprBooleanLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprBooleanLiteral> for FormatExprBooleanLiteral {
+    fn fmt_fields(&self, item: &'a ExprBooleanLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         if item.value {
             token("True").fmt(f)
         } else {

@@ -29,8 +29,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtAssign;
 
-impl FormatNodeRule<StmtAssign> for FormatStmtAssign {
-    fn fmt_fields(&self, item: &StmtAssign, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtAssign> for FormatStmtAssign {
+    fn fmt_fields(&self, item: &'a StmtAssign, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtAssign {
             range: _,
             targets,

@@ -11,8 +11,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprLambda;
 
-impl FormatNodeRule<ExprLambda> for FormatExprLambda {
-    fn fmt_fields(&self, item: &ExprLambda, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprLambda> for FormatExprLambda {
+    fn fmt_fields(&self, item: &'a ExprLambda, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprLambda {
             range: _,
             parameters,

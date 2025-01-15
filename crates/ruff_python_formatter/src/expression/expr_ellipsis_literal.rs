@@ -7,8 +7,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprEllipsisLiteral;
 
-impl FormatNodeRule<ExprEllipsisLiteral> for FormatExprEllipsisLiteral {
-    fn fmt_fields(&self, _item: &ExprEllipsisLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprEllipsisLiteral> for FormatExprEllipsisLiteral {
+    fn fmt_fields(&self, _item: &'a ExprEllipsisLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         token("...").fmt(f)
     }
 }

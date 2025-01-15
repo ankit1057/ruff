@@ -124,8 +124,8 @@ impl Format<PyFormatContext<'_>> for AnyExpressionYield<'_> {
 #[derive(Default)]
 pub struct FormatExprYield;
 
-impl FormatNodeRule<ExprYield> for FormatExprYield {
-    fn fmt_fields(&self, item: &ExprYield, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprYield> for FormatExprYield {
+    fn fmt_fields(&self, item: &'a ExprYield, f: &mut PyFormatter) -> FormatResult<()> {
         AnyExpressionYield::from(item).fmt(f)
     }
 }

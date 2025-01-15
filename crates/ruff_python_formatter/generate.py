@@ -139,7 +139,7 @@ for node in nodes:
                 node: &ast::{node},
                 f: &mut PyFormatter,
             ) -> FormatResult<()> {{
-                FormatNodeRule::<ast::{node}>::fmt(self, node, f)
+                FormatNodeRule::<&ast::{node}>::fmt(self, node, f)
             }}
         }}
         impl<'ast> AsFormat<PyFormatContext<'ast>> for ast::{node} {{

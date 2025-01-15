@@ -7,8 +7,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtImport;
 
-impl FormatNodeRule<StmtImport> for FormatStmtImport {
-    fn fmt_fields(&self, item: &StmtImport, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtImport> for FormatStmtImport {
+    fn fmt_fields(&self, item: &'a StmtImport, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtImport { names, range: _ } = item;
         let names = format_with(|f| {
             f.join_with(&format_args![token(","), space()])

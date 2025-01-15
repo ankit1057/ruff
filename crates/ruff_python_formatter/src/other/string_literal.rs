@@ -36,8 +36,8 @@ impl StringLiteralKind {
     }
 }
 
-impl FormatNodeRule<StringLiteral> for FormatStringLiteral {
-    fn fmt_fields(&self, item: &StringLiteral, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StringLiteral> for FormatStringLiteral {
+    fn fmt_fields(&self, item: &'a StringLiteral, f: &mut PyFormatter) -> FormatResult<()> {
         let quote_style = f.options().quote_style();
         let quote_style = if self.layout.is_docstring() && !quote_style.is_preserve() {
             // Per PEP 8 and PEP 257, always prefer double quotes for docstrings,

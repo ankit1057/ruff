@@ -1,5 +1,4 @@
 use ruff_formatter::{format_args, write};
-use ruff_python_ast::AstNode;
 use ruff_python_ast::{Stmt, StmtWhile};
 use ruff_text_size::Ranged;
 
@@ -12,8 +11,8 @@ use crate::statement::suite::SuiteKind;
 #[derive(Default)]
 pub struct FormatStmtWhile;
 
-impl FormatNodeRule<StmtWhile> for FormatStmtWhile {
-    fn fmt_fields(&self, item: &StmtWhile, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtWhile> for FormatStmtWhile {
+    fn fmt_fields(&self, item: &'a StmtWhile, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtWhile {
             range: _,
             test,
@@ -22,7 +21,7 @@ impl FormatNodeRule<StmtWhile> for FormatStmtWhile {
         } = item;
 
         let comments = f.context().comments().clone();
-        let dangling_comments = comments.dangling(item.as_any_node_ref());
+        let dangling_comments = comments.dangling(item);
 
         let body_start = body.first().map_or(test.end(), Stmt::start);
         let or_else_comments_start =

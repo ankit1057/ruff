@@ -11,8 +11,8 @@ use crate::{has_skip_comment, prelude::*};
 #[derive(Default)]
 pub struct FormatStmtDelete;
 
-impl FormatNodeRule<StmtDelete> for FormatStmtDelete {
-    fn fmt_fields(&self, item: &StmtDelete, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a StmtDelete> for FormatStmtDelete {
+    fn fmt_fields(&self, item: &'a StmtDelete, f: &mut PyFormatter) -> FormatResult<()> {
         let StmtDelete { range: _, targets } = item;
 
         write!(f, [token("del"), space()])?;

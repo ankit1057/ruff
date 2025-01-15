@@ -11,8 +11,8 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct FormatExprNamed;
 
-impl FormatNodeRule<ExprNamed> for FormatExprNamed {
-    fn fmt_fields(&self, item: &ExprNamed, f: &mut PyFormatter) -> FormatResult<()> {
+impl<'a> FormatNodeRule<'a, &'a ExprNamed> for FormatExprNamed {
+    fn fmt_fields(&self, item: &'a ExprNamed, f: &mut PyFormatter) -> FormatResult<()> {
         let ExprNamed {
             target,
             value,
