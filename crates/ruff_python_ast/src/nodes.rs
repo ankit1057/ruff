@@ -33,7 +33,7 @@ pub enum Mod {
 #[derive(Clone, Debug, PartialEq)]
 pub struct ModModule {
     pub range: TextRange,
-    pub body: Vec<Stmt>,
+    pub body: Vec<StmtId>,
 }
 
 /// See also [Expression](https://docs.python.org/3/library/ast.html#ast.Expression)
@@ -44,60 +44,60 @@ pub struct ModExpression {
 }
 
 /// See also [stmt](https://docs.python.org/3/library/ast.html#ast.stmt)
-#[derive(Clone, Debug, PartialEq, is_macro::Is)]
-pub enum Stmt {
+#[ast_enum]
+pub enum StmtId {
     #[is(name = "function_def_stmt")]
-    FunctionDef(StmtFunctionDef),
+    FunctionDef(StmtFunctionDefId),
     #[is(name = "class_def_stmt")]
-    ClassDef(StmtClassDef),
+    ClassDef(StmtClassDefId),
     #[is(name = "return_stmt")]
-    Return(StmtReturn),
+    Return(StmtReturnId),
     #[is(name = "delete_stmt")]
-    Delete(StmtDelete),
+    Delete(StmtDeleteId),
     #[is(name = "assign_stmt")]
-    Assign(StmtAssign),
+    Assign(StmtAssignId),
     #[is(name = "aug_assign_stmt")]
-    AugAssign(StmtAugAssign),
+    AugAssign(StmtAugAssignId),
     #[is(name = "ann_assign_stmt")]
-    AnnAssign(StmtAnnAssign),
+    AnnAssign(StmtAnnAssignId),
     #[is(name = "type_alias_stmt")]
-    TypeAlias(StmtTypeAlias),
+    TypeAlias(StmtTypeAliasId),
     #[is(name = "for_stmt")]
-    For(StmtFor),
+    For(StmtForId),
     #[is(name = "while_stmt")]
-    While(StmtWhile),
+    While(StmtWhileId),
     #[is(name = "if_stmt")]
-    If(StmtIf),
+    If(StmtIfId),
     #[is(name = "with_stmt")]
-    With(StmtWith),
+    With(StmtWithId),
     #[is(name = "match_stmt")]
-    Match(StmtMatch),
+    Match(StmtMatchId),
     #[is(name = "raise_stmt")]
-    Raise(StmtRaise),
+    Raise(StmtRaiseId),
     #[is(name = "try_stmt")]
-    Try(StmtTry),
+    Try(StmtTryId),
     #[is(name = "assert_stmt")]
-    Assert(StmtAssert),
+    Assert(StmtAssertId),
     #[is(name = "import_stmt")]
-    Import(StmtImport),
+    Import(StmtImportId),
     #[is(name = "import_from_stmt")]
-    ImportFrom(StmtImportFrom),
+    ImportFrom(StmtImportFromId),
     #[is(name = "global_stmt")]
-    Global(StmtGlobal),
+    Global(StmtGlobalId),
     #[is(name = "nonlocal_stmt")]
-    Nonlocal(StmtNonlocal),
+    Nonlocal(StmtNonlocalId),
     #[is(name = "expr_stmt")]
-    Expr(StmtExpr),
+    Expr(StmtExprId),
     #[is(name = "pass_stmt")]
-    Pass(StmtPass),
+    Pass(StmtPassId),
     #[is(name = "break_stmt")]
-    Break(StmtBreak),
+    Break(StmtBreakId),
     #[is(name = "continue_stmt")]
-    Continue(StmtContinue),
+    Continue(StmtContinueId),
 
     // Jupyter notebook specific
     #[is(name = "ipy_escape_command_stmt")]
-    IpyEscapeCommand(StmtIpyEscapeCommand),
+    IpyEscapeCommand(StmtIpyEscapeCommandId),
 }
 
 /// An AST node used to represent a IPython escape command at the statement level.
@@ -160,12 +160,6 @@ pub struct StmtIpyEscapeCommand {
     pub value: Box<str>,
 }
 
-impl From<StmtIpyEscapeCommand> for Stmt {
-    fn from(payload: StmtIpyEscapeCommand) -> Self {
-        Stmt::IpyEscapeCommand(payload)
-    }
-}
-
 /// See also [FunctionDef](https://docs.python.org/3/library/ast.html#ast.FunctionDef) and
 /// [AsyncFunctionDef](https://docs.python.org/3/library/ast.html#ast.AsyncFunctionDef).
 ///
@@ -181,12 +175,6 @@ pub struct StmtFunctionDef {
     pub parameters: Box<Parameters>,
     pub returns: Option<Box<Expr>>,
     pub body: Vec<Stmt>,
-}
-
-impl From<StmtFunctionDef> for Stmt {
-    fn from(payload: StmtFunctionDef) -> Self {
-        Stmt::FunctionDef(payload)
-    }
 }
 
 /// See also [ClassDef](https://docs.python.org/3/library/ast.html#ast.ClassDef)
@@ -218,12 +206,6 @@ impl StmtClassDef {
     }
 }
 
-impl From<StmtClassDef> for Stmt {
-    fn from(payload: StmtClassDef) -> Self {
-        Stmt::ClassDef(payload)
-    }
-}
-
 /// See also [Return](https://docs.python.org/3/library/ast.html#ast.Return)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtReturn {
@@ -231,23 +213,11 @@ pub struct StmtReturn {
     pub value: Option<Box<Expr>>,
 }
 
-impl From<StmtReturn> for Stmt {
-    fn from(payload: StmtReturn) -> Self {
-        Stmt::Return(payload)
-    }
-}
-
 /// See also [Delete](https://docs.python.org/3/library/ast.html#ast.Delete)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtDelete {
     pub range: TextRange,
     pub targets: Vec<Expr>,
-}
-
-impl From<StmtDelete> for Stmt {
-    fn from(payload: StmtDelete) -> Self {
-        Stmt::Delete(payload)
-    }
 }
 
 /// See also [TypeAlias](https://docs.python.org/3/library/ast.html#ast.TypeAlias)
@@ -259,24 +229,12 @@ pub struct StmtTypeAlias {
     pub value: Box<Expr>,
 }
 
-impl From<StmtTypeAlias> for Stmt {
-    fn from(payload: StmtTypeAlias) -> Self {
-        Stmt::TypeAlias(payload)
-    }
-}
-
 /// See also [Assign](https://docs.python.org/3/library/ast.html#ast.Assign)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtAssign {
     pub range: TextRange,
     pub targets: Vec<Expr>,
     pub value: Box<Expr>,
-}
-
-impl From<StmtAssign> for Stmt {
-    fn from(payload: StmtAssign) -> Self {
-        Stmt::Assign(payload)
-    }
 }
 
 /// See also [AugAssign](https://docs.python.org/3/library/ast.html#ast.AugAssign)
@@ -288,12 +246,6 @@ pub struct StmtAugAssign {
     pub value: Box<Expr>,
 }
 
-impl From<StmtAugAssign> for Stmt {
-    fn from(payload: StmtAugAssign) -> Self {
-        Stmt::AugAssign(payload)
-    }
-}
-
 /// See also [AnnAssign](https://docs.python.org/3/library/ast.html#ast.AnnAssign)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtAnnAssign {
@@ -302,12 +254,6 @@ pub struct StmtAnnAssign {
     pub annotation: Box<Expr>,
     pub value: Option<Box<Expr>>,
     pub simple: bool,
-}
-
-impl From<StmtAnnAssign> for Stmt {
-    fn from(payload: StmtAnnAssign) -> Self {
-        Stmt::AnnAssign(payload)
-    }
 }
 
 /// See also [For](https://docs.python.org/3/library/ast.html#ast.For) and
@@ -325,12 +271,6 @@ pub struct StmtFor {
     pub orelse: Vec<Stmt>,
 }
 
-impl From<StmtFor> for Stmt {
-    fn from(payload: StmtFor) -> Self {
-        Stmt::For(payload)
-    }
-}
-
 /// See also [While](https://docs.python.org/3/library/ast.html#ast.While) and
 /// [AsyncWhile](https://docs.python.org/3/library/ast.html#ast.AsyncWhile).
 #[derive(Clone, Debug, PartialEq)]
@@ -341,12 +281,6 @@ pub struct StmtWhile {
     pub orelse: Vec<Stmt>,
 }
 
-impl From<StmtWhile> for Stmt {
-    fn from(payload: StmtWhile) -> Self {
-        Stmt::While(payload)
-    }
-}
-
 /// See also [If](https://docs.python.org/3/library/ast.html#ast.If)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtIf {
@@ -354,12 +288,6 @@ pub struct StmtIf {
     pub test: Box<Expr>,
     pub body: Vec<Stmt>,
     pub elif_else_clauses: Vec<ElifElseClause>,
-}
-
-impl From<StmtIf> for Stmt {
-    fn from(payload: StmtIf) -> Self {
-        Stmt::If(payload)
-    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -382,12 +310,6 @@ pub struct StmtWith {
     pub body: Vec<Stmt>,
 }
 
-impl From<StmtWith> for Stmt {
-    fn from(payload: StmtWith) -> Self {
-        Stmt::With(payload)
-    }
-}
-
 /// See also [Match](https://docs.python.org/3/library/ast.html#ast.Match)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtMatch {
@@ -396,24 +318,12 @@ pub struct StmtMatch {
     pub cases: Vec<MatchCase>,
 }
 
-impl From<StmtMatch> for Stmt {
-    fn from(payload: StmtMatch) -> Self {
-        Stmt::Match(payload)
-    }
-}
-
 /// See also [Raise](https://docs.python.org/3/library/ast.html#ast.Raise)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtRaise {
     pub range: TextRange,
     pub exc: Option<Box<Expr>>,
     pub cause: Option<Box<Expr>>,
-}
-
-impl From<StmtRaise> for Stmt {
-    fn from(payload: StmtRaise) -> Self {
-        Stmt::Raise(payload)
-    }
 }
 
 /// See also [Try](https://docs.python.org/3/library/ast.html#ast.Try) and
@@ -428,12 +338,6 @@ pub struct StmtTry {
     pub is_star: bool,
 }
 
-impl From<StmtTry> for Stmt {
-    fn from(payload: StmtTry) -> Self {
-        Stmt::Try(payload)
-    }
-}
-
 /// See also [Assert](https://docs.python.org/3/library/ast.html#ast.Assert)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtAssert {
@@ -442,23 +346,11 @@ pub struct StmtAssert {
     pub msg: Option<Box<Expr>>,
 }
 
-impl From<StmtAssert> for Stmt {
-    fn from(payload: StmtAssert) -> Self {
-        Stmt::Assert(payload)
-    }
-}
-
 /// See also [Import](https://docs.python.org/3/library/ast.html#ast.Import)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtImport {
     pub range: TextRange,
     pub names: Vec<Alias>,
-}
-
-impl From<StmtImport> for Stmt {
-    fn from(payload: StmtImport) -> Self {
-        Stmt::Import(payload)
-    }
 }
 
 /// See also [ImportFrom](https://docs.python.org/3/library/ast.html#ast.ImportFrom)
@@ -470,23 +362,11 @@ pub struct StmtImportFrom {
     pub level: u32,
 }
 
-impl From<StmtImportFrom> for Stmt {
-    fn from(payload: StmtImportFrom) -> Self {
-        Stmt::ImportFrom(payload)
-    }
-}
-
 /// See also [Global](https://docs.python.org/3/library/ast.html#ast.Global)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtGlobal {
     pub range: TextRange,
     pub names: Vec<Identifier>,
-}
-
-impl From<StmtGlobal> for Stmt {
-    fn from(payload: StmtGlobal) -> Self {
-        Stmt::Global(payload)
-    }
 }
 
 /// See also [Nonlocal](https://docs.python.org/3/library/ast.html#ast.Nonlocal)
@@ -496,23 +376,11 @@ pub struct StmtNonlocal {
     pub names: Vec<Identifier>,
 }
 
-impl From<StmtNonlocal> for Stmt {
-    fn from(payload: StmtNonlocal) -> Self {
-        Stmt::Nonlocal(payload)
-    }
-}
-
 /// See also [Expr](https://docs.python.org/3/library/ast.html#ast.Expr)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtExpr {
     pub range: TextRange,
     pub value: Box<Expr>,
-}
-
-impl From<StmtExpr> for Stmt {
-    fn from(payload: StmtExpr) -> Self {
-        Stmt::Expr(payload)
-    }
 }
 
 /// See also [Pass](https://docs.python.org/3/library/ast.html#ast.Pass)
@@ -521,34 +389,16 @@ pub struct StmtPass {
     pub range: TextRange,
 }
 
-impl From<StmtPass> for Stmt {
-    fn from(payload: StmtPass) -> Self {
-        Stmt::Pass(payload)
-    }
-}
-
 /// See also [Break](https://docs.python.org/3/library/ast.html#ast.Break)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtBreak {
     pub range: TextRange,
 }
 
-impl From<StmtBreak> for Stmt {
-    fn from(payload: StmtBreak) -> Self {
-        Stmt::Break(payload)
-    }
-}
-
 /// See also [Continue](https://docs.python.org/3/library/ast.html#ast.Continue)
 #[derive(Clone, Debug, PartialEq)]
 pub struct StmtContinue {
     pub range: TextRange,
-}
-
-impl From<StmtContinue> for Stmt {
-    fn from(payload: StmtContinue) -> Self {
-        Stmt::Continue(payload)
-    }
 }
 
 /// See also [expr](https://docs.python.org/3/library/ast.html#ast.expr)
