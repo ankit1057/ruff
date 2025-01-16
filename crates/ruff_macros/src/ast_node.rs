@@ -38,13 +38,18 @@ struct AstVariant {
 impl AstEnum {
     fn new(input: ItemEnum) -> Result<AstEnum> {
         let ItemEnum {
-            ident: enum_node_ty,
-            ..
+            ident: id_ident, ..
         } = input;
+        let node_ident = trim_id(&id_ident)?;
         let variants: Result<Vec<_>> = input.variants.into_iter().map(AstVariant::new).collect();
         let variants = variants?;
+        let storage_ty = concat("", &node_ident, "Storage");
+        let storage_field = snake_case(&storage_ty);
         Ok(AstEnum {
-            enum_node_ty,
+            id_ident,
+            node_ident,
+            storage_field,
+            storage_ty,
             variants,
         })
     }
@@ -77,258 +82,220 @@ impl AstVariant {
                 "Each AstNode variant must wrap a simple Id type",
             ));
         };
-        let variant_node_ty = field_ty.path.require_ident()?.clone();
+        let id_ty = field_ty.path.require_ident()?.clone();
+        let node_ty = trim_id(&id_ty)?;
+        let vec_name = snake_case(&node_ty);
         Ok(AstVariant {
             variant_name: variant.ident.clone(),
-            variant_node_ty,
+            id_ty,
+            node_ty,
+            vec_name,
             attrs: variant.attrs,
         })
     }
 }
 
+fn generate_id_enum(ast_enum: &AstEnum) -> TokenStream {
+    let AstEnum {
+        id_ident, variants, ..
+    } = ast_enum;
+    let variants = variants.iter().map(|v| {
+        let AstVariant {
+            attrs,
+            variant_name,
+            id_ty,
+            ..
+        } = v;
+        quote! {
+            #( #attrs )*
+            #variant_name(#id_ty)
+        }
+    });
+    quote! {
+        #[automatically_derived]
+        #[derive(Copy, Clone, Debug, PartialEq, is_macro::Is)]
+        pub enum #id_ident {
+            #( #variants ),*
+        }
+    }
+}
+
 fn generate_node_enum(ast_enum: &AstEnum) -> TokenStream {
     let AstEnum {
-        enum_node_ty,
+        node_ident,
         variants,
         ..
     } = ast_enum;
-    let enum_ref_ty = concat("", enum_node_ty, "Ref");
-    let any_variant = concat("Any", enum_node_ty, "");
-
-    let enum_node_variants = variants.iter().map(|v| {
+    let variants = variants.iter().map(|v| {
         let AstVariant {
             attrs,
             variant_name,
-            variant_node_ty,
+            node_ty,
             ..
         } = v;
         quote! {
             #( #attrs )*
-            #variant_name(#variant_node_ty)
+            #variant_name(crate::Node<'a, &'a #node_ty>)
         }
     });
+    quote! {
+        #[automatically_derived]
+        #[derive(Copy, Clone, Debug, PartialEq, is_macro::Is)]
+        pub enum #node_ident<'a> {
+            #( #variants ),*
+        }
+    }
+}
 
-    let enum_node_from_impls = variants.iter().map(|v| {
+fn generate_node_enum_node_method(ast_enum: &AstEnum) -> TokenStream {
+    let AstEnum {
+        id_ident,
+        node_ident,
+        variants,
+        ..
+    } = ast_enum;
+    let variants = variants.iter().map(|v| {
+        let AstVariant { variant_name, .. } = v;
+        quote! { #id_ident::#variant_name(id) => #node_ident::#variant_name(self.ast.wrap(&self.ast[id])) }
+    });
+    quote! {
+        #[automatically_derived]
+        impl<'a> crate::Node<'a, #id_ident> {
+            #[inline]
+            pub fn node(&self) -> #node_ident<'a> {
+                match self.node {
+                    #( #variants ),*
+                }
+            }
+        }
+    }
+}
+
+fn generate_node_enum_ranged_impl(ast_enum: &AstEnum) -> TokenStream {
+    let AstEnum {
+        node_ident,
+        variants,
+        ..
+    } = ast_enum;
+    let variants = variants.iter().map(|v| {
+        let AstVariant { variant_name, .. } = v;
+        quote! { #node_ident::#variant_name(node) => node.range() }
+    });
+    quote! {
+        #[automatically_derived]
+        impl ruff_text_size::Ranged for #node_ident<'_> {
+            fn range(&self) -> ruff_text_size::TextRange {
+                match self {
+                    #( #variants ),*
+                }
+            }
+        }
+    }
+}
+
+fn generate_variant_ids(ast_enum: &AstEnum) -> TokenStream {
+    let AstEnum {
+        variants,
+        storage_field,
+        ..
+    } = ast_enum;
+    let variants = variants.iter().map(|v| {
         let AstVariant {
-            variant_name,
-            variant_node_ty,
+            id_ty,
+            node_ty,
+            vec_name,
             ..
         } = v;
         quote! {
             #[automatically_derived]
-            impl From<#variant_node_ty> for #enum_node_ty {
-                fn from(node: #variant_node_ty) -> #enum_node_ty {
-                    #enum_node_ty::#variant_name(node)
+            #[ruff_index::newtype_index]
+            pub struct #id_ty;
+
+            #[automatically_derived]
+            impl std::ops::Index<#id_ty> for crate::Ast {
+                type Output = #node_ty;
+                #[inline]
+                fn index(&self, id: #id_ty) -> &#node_ty {
+                    &self.#storage_field.#vec_name[id]
                 }
             }
-        }
-    });
 
-    let enum_node_ranged_impls = variants.iter().map(|v| {
-        let AstVariant {
-            variant_node_ty, ..
-        } = v;
-        quote! {
             #[automatically_derived]
-            impl ruff_text_size::Ranged for #variant_node_ty {
-                fn range(&self) -> ruff_text_size::TextRange {
+            impl std::ops::IndexMut<#id_ty> for crate::Ast {
+                #[inline]
+                fn index_mut(&mut self, id: #id_ty) -> &mut #node_ty {
+                    &mut self.#storage_field.#vec_name[id]
+                }
+            }
+
+            #[automatically_derived]
+            impl<'a> crate::Node<'a, #id_ty> {
+                #[inline]
+                pub fn node(&self) -> crate::Node<'a, &'a #node_ty> {
+                    self.ast.wrap(&self.ast[self.node])
+                }
+            }
+
+            #[automatically_derived]
+            impl<'a> ruff_text_size::Ranged for #node_ty {
+                fn range(&self) -> TextRange {
                     self.range
                 }
             }
-        }
-    });
-
-    let enum_ref_variants = variants.iter().map(|v| {
-        let AstVariant {
-            attrs,
-            variant_name,
-            variant_node_ty,
-            ..
-        } = v;
-        quote! {
-            #( #attrs )*
-            #variant_name(&'a #variant_node_ty)
-        }
-    });
-
-    let enum_ref_from_impls = variants.iter().map(|v| {
-        let AstVariant {
-            variant_name,
-            variant_node_ty,
-            ..
-        } = v;
-        quote! {
-            #[automatically_derived]
-            impl<'a> From<&'a #variant_node_ty> for #enum_ref_ty<'a> {
-                fn from(payload: &'a #variant_node_ty) -> #enum_ref_ty<'a> {
-                    #enum_ref_ty::#variant_name(payload)
-                }
-            }
-        }
-    });
-
-    let enum_node_as_ref_variants = variants.iter().map(|v| {
-        let AstVariant { variant_name, .. } = v;
-        quote! { #enum_node_ty::#variant_name(node) => #enum_ref_ty::#variant_name(node), }
-    });
-
-    let enum_ref_as_ptr_variants = variants.iter().map(|v| {
-        let AstVariant { variant_name, .. } = v;
-        quote! { #enum_ref_ty::#variant_name(node) => std::ptr::NonNull::from(*node).cast(), }
-    });
-
-    let enum_ref_kind_variants = variants.iter().map(|v| {
-        let AstVariant {
-            variant_name,
-            variant_node_ty,
-            ..
-        } = v;
-        quote! { #enum_ref_ty::#variant_name(node) => crate::NodeKind::#variant_node_ty, }
-    });
-
-    let enum_ref_visit_preorder_variants = variants.iter().map(|v| {
-        let AstVariant { variant_name, .. } = v;
-        quote! { #enum_ref_ty::#variant_name(node) => node.visit_source_order(visitor), }
-    });
-
-    let enum_ref_ranged_variants = variants.iter().map(|v| {
-        let AstVariant { variant_name, .. } = v;
-        quote! { #enum_ref_ty::#variant_name(node) => node.range(), }
-    });
-
-    let any_node_from_impls = variants.iter().map(|v| {
-        let AstVariant {
-            variant_name,
-            variant_node_ty,
-            ..
-        } = v;
-        quote! {
-            #[automatically_derived]
-            impl From<#variant_node_ty> for crate::AnyNode {
-                fn from(node: #variant_node_ty) -> crate::AnyNode {
-                    crate::AnyNode::#any_variant(#enum_node_ty::#variant_name(node))
-                }
-            }
 
             #[automatically_derived]
-            impl<'a> From<&'a #variant_node_ty> for crate::AnyNodeRef<'a> {
-                fn from(node: &'a #variant_node_ty) -> crate::AnyNodeRef<'a> {
-                    crate::AnyNodeRef::#any_variant(#enum_ref_ty::#variant_name(node))
+            impl<'a> ruff_text_size::Ranged for crate::Node<'a, &'a #node_ty> {
+                fn range(&self) -> TextRange {
+                    self.as_ref().range()
                 }
             }
         }
     });
+    quote! { #( #variants )* }
+}
 
-    let any_node_is_impls = variants.iter().map(|v| {
+fn generate_storage(ast_enum: &AstEnum) -> TokenStream {
+    let AstEnum {
+        id_ident,
+        variants,
+        storage_field,
+        storage_ty,
+        ..
+    } = ast_enum;
+    let storage_fields = variants.iter().map(|v| {
         let AstVariant {
-            variant_name,
-            variant_node_ty,
+            id_ty,
+            node_ty,
+            vec_name,
             ..
         } = v;
-        let any_method_name = concat("is_", &snake_case(variant_node_ty), "");
-        let method_name = concat("is_", &snake_case(variant_name), "");
+        quote! { #vec_name: ruff_index::IndexVec<#id_ty, #node_ty> }
+    });
+    let add_methods = variants.iter().map(|v| {
+        let AstVariant {
+            variant_name,
+            node_ty,
+            vec_name,
+            ..
+        } = v;
+        let method_name = concat("add_", vec_name, "");
         quote! {
-            pub fn #any_method_name(&self) -> bool {
-                match self {
-                    crate::AnyNodeRef::#any_variant(node) => node.#method_name(),
-                    _ => false,
+            #[automatically_derived]
+            impl crate::Ast {
+                pub fn #method_name(&mut self, payload: #node_ty) -> #id_ident {
+                    #id_ident::#variant_name(self.#storage_field.#vec_name.push(payload))
                 }
             }
         }
     });
-
     quote! {
         #[automatically_derived]
-        #[derive(Clone, Debug, PartialEq, is_macro::Is)]
-        pub enum #enum_node_ty {
-            #( #enum_node_variants ),*
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, Default, PartialEq)]
+        pub(crate) struct #storage_ty {
+            #( #storage_fields ),*
         }
 
-        #( #enum_node_from_impls )*
-
-        #( #enum_node_ranged_impls )*
-
-        #[automatically_derived]
-        #[derive(Clone, Copy, Debug, PartialEq, is_macro::Is)]
-        pub enum #enum_ref_ty<'a> {
-            #( #enum_ref_variants ),*
-        }
-
-        #( #enum_ref_from_impls )*
-
-        impl #enum_node_ty {
-            pub const fn as_ref(&self) -> #enum_ref_ty {
-                match self {
-                    #( #enum_node_as_ref_variants )*
-                }
-            }
-        }
-
-        impl<'a> From<&'a #enum_node_ty> for #enum_ref_ty<'a> {
-            fn from(node: &'a #enum_node_ty) -> #enum_ref_ty<'a> {
-                node.as_ref()
-            }
-        }
-
-        impl<'a> #enum_ref_ty<'a> {
-            pub fn as_ptr(&self) -> std::ptr::NonNull<()> {
-                match self {
-                    #( #enum_ref_as_ptr_variants )*
-                }
-            }
-
-            pub const fn kind(self) -> crate::NodeKind {
-                match self {
-                    #( #enum_ref_kind_variants )*
-                }
-            }
-
-            pub fn visit_preorder<'b, V>(self, visitor: &mut V)
-            where
-                V: crate::visitor::source_order::SourceOrderVisitor<'b> + ?Sized,
-                'a: 'b,
-            {
-                match self {
-                    #( #enum_ref_visit_preorder_variants )*
-                }
-            }
-        }
-
-        #[automatically_derived]
-        impl ruff_text_size::Ranged for #enum_ref_ty<'_> {
-            fn range(&self) -> ruff_text_size::TextRange {
-                match self {
-                    #( #enum_ref_ranged_variants )*
-                }
-            }
-        }
-
-        #[automatically_derived]
-        impl From<#enum_node_ty> for crate::AnyNode {
-            fn from(node: #enum_node_ty) -> crate::AnyNode {
-                crate::AnyNode::#any_variant(node)
-            }
-        }
-
-        #[automatically_derived]
-        impl<'a> From<&'a #enum_node_ty> for crate::AnyNodeRef<'a> {
-            fn from(node: &'a #enum_node_ty) -> crate::AnyNodeRef<'a> {
-                crate::AnyNodeRef::#any_variant(#enum_ref_ty::from(node))
-            }
-        }
-
-        #[automatically_derived]
-        impl<'a> From<#enum_ref_ty<'a>> for crate::AnyNodeRef<'a> {
-            fn from(node: #enum_ref_ty<'a>) -> crate::AnyNodeRef<'a> {
-                crate::AnyNodeRef::#any_variant(node)
-            }
-        }
-
-        #( #any_node_from_impls )*
-
-        #[automatically_derived]
-        impl crate::AnyNodeRef<'_> {
-            #( #any_node_is_impls )*
-        }
+        #( #add_methods )*
     }
 }

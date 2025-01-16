@@ -14,7 +14,6 @@ use itertools::Itertools;
 use ruff_macros::ast_enum;
 use ruff_text_size::{Ranged, TextLen, TextRange, TextSize};
 
-use crate::macros::define_enum;
 use crate::name::Name;
 use crate::{
     int,
