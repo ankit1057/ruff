@@ -5,7 +5,7 @@ use ruff_formatter::{
     format, FormatContext, FormatError, FormatOptions, IndentStyle, PrintedRange, SourceCode,
 };
 use ruff_python_ast::visitor::source_order::{walk_body, SourceOrderVisitor, TraversalSignal};
-use ruff_python_ast::{AnyNodeRef, Stmt, StmtMatch, StmtTry};
+use ruff_python_ast::{AnyNodeRef, ModRef, Stmt, StmtMatch, StmtTry};
 use ruff_python_parser::{parse, AsMode};
 use ruff_python_trivia::{
     indentation_at_offset, BackwardsTokenizer, CommentRanges, SimpleToken, SimpleTokenKind,
@@ -610,8 +610,8 @@ impl Format<PyFormatContext<'_>> for FormatEnclosingNode<'_> {
         // Note: It's important that this supports formatting all nodes for which `is_logical_line`
         // returns + the root `Mod` nodes.
         match self.root {
-            AnyNodeRef::ModModule(node) => node.format().fmt(f),
-            AnyNodeRef::ModExpression(node) => node.format().fmt(f),
+            AnyNodeRef::AnyMod(ModRef::Module(node)) => node.format().fmt(f),
+            AnyNodeRef::AnyMod(ModRef::Expression(node)) => node.format().fmt(f),
             AnyNodeRef::StmtFunctionDef(node) => node.format().fmt(f),
             AnyNodeRef::StmtClassDef(node) => node.format().fmt(f),
             AnyNodeRef::StmtReturn(node) => node.format().fmt(f),

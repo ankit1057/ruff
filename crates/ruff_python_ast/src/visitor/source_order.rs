@@ -176,7 +176,7 @@ pub fn walk_module<'a, V>(visitor: &mut V, module: &'a Mod)
 where
     V: SourceOrderVisitor<'a> + ?Sized,
 {
-    let node = AnyNodeRef::from(module);
+    let node = AnyNodeRef::from(module.as_ref());
     if visitor.enter_node(node).is_traverse() {
         match module {
             Mod::Module(module) => module.visit_source_order(visitor),

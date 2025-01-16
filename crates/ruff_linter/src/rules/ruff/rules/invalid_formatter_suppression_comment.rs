@@ -249,8 +249,7 @@ impl Display for IgnoredReason {
 /// Checks if an enclosing node is allowed to enclose a suppression comment.
 const fn is_valid_enclosing_node(node: AnyNodeRef) -> bool {
     match node {
-        AnyNodeRef::ModModule(_)
-        | AnyNodeRef::ModExpression(_)
+        AnyNodeRef::AnyMod(_)
         | AnyNodeRef::StmtFunctionDef(_)
         | AnyNodeRef::StmtClassDef(_)
         | AnyNodeRef::StmtReturn(_)

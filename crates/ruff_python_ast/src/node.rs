@@ -10,8 +10,7 @@ use std::ptr::NonNull;
 
 #[derive(Clone, Debug, is_macro::Is, PartialEq)]
 pub enum AnyNode {
-    ModModule(ast::ModModule),
-    ModExpression(ast::ModExpression),
+    AnyMod(ast::Mod),
     StmtFunctionDef(ast::StmtFunctionDef),
     StmtClassDef(ast::StmtClassDef),
     StmtReturn(ast::StmtReturn),
@@ -133,8 +132,7 @@ impl AnyNode {
             AnyNode::StmtContinue(node) => Some(Stmt::Continue(node)),
             AnyNode::StmtIpyEscapeCommand(node) => Some(Stmt::IpyEscapeCommand(node)),
 
-            AnyNode::ModModule(_)
-            | AnyNode::ModExpression(_)
+            AnyNode::AnyMod(_)
             | AnyNode::ExprBoolOp(_)
             | AnyNode::ExprNamed(_)
             | AnyNode::ExprBinOp(_)
@@ -238,8 +236,7 @@ impl AnyNode {
             AnyNode::ExprSlice(node) => Some(Expr::Slice(node)),
             AnyNode::ExprIpyEscapeCommand(node) => Some(Expr::IpyEscapeCommand(node)),
 
-            AnyNode::ModModule(_)
-            | AnyNode::ModExpression(_)
+            AnyNode::AnyMod(_)
             | AnyNode::StmtFunctionDef(_)
             | AnyNode::StmtClassDef(_)
             | AnyNode::StmtReturn(_)
@@ -303,8 +300,7 @@ impl AnyNode {
 
     pub fn module(self) -> Option<Mod> {
         match self {
-            AnyNode::ModModule(node) => Some(Mod::Module(node)),
-            AnyNode::ModExpression(node) => Some(Mod::Expression(node)),
+            AnyNode::AnyMod(node) => Some(node),
 
             AnyNode::StmtFunctionDef(_)
             | AnyNode::StmtClassDef(_)
@@ -410,8 +406,7 @@ impl AnyNode {
             AnyNode::PatternMatchAs(node) => Some(Pattern::MatchAs(node)),
             AnyNode::PatternMatchOr(node) => Some(Pattern::MatchOr(node)),
 
-            AnyNode::ModModule(_)
-            | AnyNode::ModExpression(_)
+            AnyNode::AnyMod(_)
             | AnyNode::StmtFunctionDef(_)
             | AnyNode::StmtClassDef(_)
             | AnyNode::StmtReturn(_)
@@ -501,8 +496,7 @@ impl AnyNode {
         match self {
             AnyNode::ExceptHandlerExceptHandler(node) => Some(ExceptHandler::ExceptHandler(node)),
 
-            AnyNode::ModModule(_)
-            | AnyNode::ModExpression(_)
+            AnyNode::AnyMod(_)
             | AnyNode::StmtFunctionDef(_)
             | AnyNode::StmtClassDef(_)
             | AnyNode::StmtReturn(_)
@@ -617,8 +611,7 @@ impl AnyNode {
 
     pub const fn as_ref(&self) -> AnyNodeRef {
         match self {
-            Self::ModModule(node) => AnyNodeRef::ModModule(node),
-            Self::ModExpression(node) => AnyNodeRef::ModExpression(node),
+            Self::AnyMod(node) => AnyNodeRef::AnyMod(node.as_ref()),
             Self::StmtFunctionDef(node) => AnyNodeRef::StmtFunctionDef(node),
             Self::StmtClassDef(node) => AnyNodeRef::StmtClassDef(node),
             Self::StmtReturn(node) => AnyNodeRef::StmtReturn(node),
@@ -2289,15 +2282,6 @@ impl From<Expr> for AnyNode {
     }
 }
 
-impl From<Mod> for AnyNode {
-    fn from(module: Mod) -> Self {
-        match module {
-            Mod::Module(node) => AnyNode::ModModule(node),
-            Mod::Expression(node) => AnyNode::ModExpression(node),
-        }
-    }
-}
-
 impl From<FStringElement> for AnyNode {
     fn from(element: FStringElement) -> Self {
         match element {
@@ -2327,18 +2311,6 @@ impl From<ExceptHandler> for AnyNode {
         match handler {
             ExceptHandler::ExceptHandler(handler) => AnyNode::ExceptHandlerExceptHandler(handler),
         }
-    }
-}
-
-impl From<ast::ModModule> for AnyNode {
-    fn from(node: ast::ModModule) -> Self {
-        AnyNode::ModModule(node)
-    }
-}
-
-impl From<ast::ModExpression> for AnyNode {
-    fn from(node: ast::ModExpression) -> Self {
-        AnyNode::ModExpression(node)
     }
 }
 
@@ -2873,107 +2845,13 @@ impl From<ast::Identifier> for AnyNode {
 
 impl Ranged for AnyNode {
     fn range(&self) -> TextRange {
-        match self {
-            AnyNode::ModModule(node) => node.range(),
-            AnyNode::ModExpression(node) => node.range(),
-            AnyNode::StmtFunctionDef(node) => node.range(),
-            AnyNode::StmtClassDef(node) => node.range(),
-            AnyNode::StmtReturn(node) => node.range(),
-            AnyNode::StmtDelete(node) => node.range(),
-            AnyNode::StmtTypeAlias(node) => node.range(),
-            AnyNode::StmtAssign(node) => node.range(),
-            AnyNode::StmtAugAssign(node) => node.range(),
-            AnyNode::StmtAnnAssign(node) => node.range(),
-            AnyNode::StmtFor(node) => node.range(),
-            AnyNode::StmtWhile(node) => node.range(),
-            AnyNode::StmtIf(node) => node.range(),
-            AnyNode::StmtWith(node) => node.range(),
-            AnyNode::StmtMatch(node) => node.range(),
-            AnyNode::StmtRaise(node) => node.range(),
-            AnyNode::StmtTry(node) => node.range(),
-            AnyNode::StmtAssert(node) => node.range(),
-            AnyNode::StmtImport(node) => node.range(),
-            AnyNode::StmtImportFrom(node) => node.range(),
-            AnyNode::StmtGlobal(node) => node.range(),
-            AnyNode::StmtNonlocal(node) => node.range(),
-            AnyNode::StmtExpr(node) => node.range(),
-            AnyNode::StmtPass(node) => node.range(),
-            AnyNode::StmtBreak(node) => node.range(),
-            AnyNode::StmtContinue(node) => node.range(),
-            AnyNode::StmtIpyEscapeCommand(node) => node.range(),
-            AnyNode::ExprBoolOp(node) => node.range(),
-            AnyNode::ExprNamed(node) => node.range(),
-            AnyNode::ExprBinOp(node) => node.range(),
-            AnyNode::ExprUnaryOp(node) => node.range(),
-            AnyNode::ExprLambda(node) => node.range(),
-            AnyNode::ExprIf(node) => node.range(),
-            AnyNode::ExprDict(node) => node.range(),
-            AnyNode::ExprSet(node) => node.range(),
-            AnyNode::ExprListComp(node) => node.range(),
-            AnyNode::ExprSetComp(node) => node.range(),
-            AnyNode::ExprDictComp(node) => node.range(),
-            AnyNode::ExprGenerator(node) => node.range(),
-            AnyNode::ExprAwait(node) => node.range(),
-            AnyNode::ExprYield(node) => node.range(),
-            AnyNode::ExprYieldFrom(node) => node.range(),
-            AnyNode::ExprCompare(node) => node.range(),
-            AnyNode::ExprCall(node) => node.range(),
-            AnyNode::FStringExpressionElement(node) => node.range(),
-            AnyNode::FStringLiteralElement(node) => node.range(),
-            AnyNode::FStringFormatSpec(node) => node.range(),
-            AnyNode::ExprFString(node) => node.range(),
-            AnyNode::ExprStringLiteral(node) => node.range(),
-            AnyNode::ExprBytesLiteral(node) => node.range(),
-            AnyNode::ExprNumberLiteral(node) => node.range(),
-            AnyNode::ExprBooleanLiteral(node) => node.range(),
-            AnyNode::ExprNoneLiteral(node) => node.range(),
-            AnyNode::ExprEllipsisLiteral(node) => node.range(),
-            AnyNode::ExprAttribute(node) => node.range(),
-            AnyNode::ExprSubscript(node) => node.range(),
-            AnyNode::ExprStarred(node) => node.range(),
-            AnyNode::ExprName(node) => node.range(),
-            AnyNode::ExprList(node) => node.range(),
-            AnyNode::ExprTuple(node) => node.range(),
-            AnyNode::ExprSlice(node) => node.range(),
-            AnyNode::ExprIpyEscapeCommand(node) => node.range(),
-            AnyNode::ExceptHandlerExceptHandler(node) => node.range(),
-            AnyNode::PatternMatchValue(node) => node.range(),
-            AnyNode::PatternMatchSingleton(node) => node.range(),
-            AnyNode::PatternMatchSequence(node) => node.range(),
-            AnyNode::PatternMatchMapping(node) => node.range(),
-            AnyNode::PatternMatchClass(node) => node.range(),
-            AnyNode::PatternMatchStar(node) => node.range(),
-            AnyNode::PatternMatchAs(node) => node.range(),
-            AnyNode::PatternMatchOr(node) => node.range(),
-            AnyNode::PatternArguments(node) => node.range(),
-            AnyNode::PatternKeyword(node) => node.range(),
-            AnyNode::Comprehension(node) => node.range(),
-            AnyNode::Arguments(node) => node.range(),
-            AnyNode::Parameters(node) => node.range(),
-            AnyNode::Parameter(node) => node.range(),
-            AnyNode::ParameterWithDefault(node) => node.range(),
-            AnyNode::Keyword(node) => node.range(),
-            AnyNode::Alias(node) => node.range(),
-            AnyNode::WithItem(node) => node.range(),
-            AnyNode::MatchCase(node) => node.range(),
-            AnyNode::Decorator(node) => node.range(),
-            AnyNode::TypeParams(node) => node.range(),
-            AnyNode::TypeParamTypeVar(node) => node.range(),
-            AnyNode::TypeParamTypeVarTuple(node) => node.range(),
-            AnyNode::TypeParamParamSpec(node) => node.range(),
-            AnyNode::FString(node) => node.range(),
-            AnyNode::StringLiteral(node) => node.range(),
-            AnyNode::BytesLiteral(node) => node.range(),
-            AnyNode::ElifElseClause(node) => node.range(),
-            AnyNode::Identifier(node) => node.range(),
-        }
+        self.as_ref().range()
     }
 }
 
 #[derive(Copy, Clone, Debug, is_macro::Is, PartialEq)]
 pub enum AnyNodeRef<'a> {
-    ModModule(&'a ast::ModModule),
-    ModExpression(&'a ast::ModExpression),
+    AnyMod(ast::ModRef<'a>),
     StmtFunctionDef(&'a ast::StmtFunctionDef),
     StmtClassDef(&'a ast::StmtClassDef),
     StmtReturn(&'a ast::StmtReturn),
@@ -3069,8 +2947,7 @@ pub enum AnyNodeRef<'a> {
 impl<'a> AnyNodeRef<'a> {
     pub fn as_ptr(&self) -> NonNull<()> {
         match self {
-            AnyNodeRef::ModModule(node) => NonNull::from(*node).cast(),
-            AnyNodeRef::ModExpression(node) => NonNull::from(*node).cast(),
+            AnyNodeRef::AnyMod(node) => node.as_ptr(),
             AnyNodeRef::StmtFunctionDef(node) => NonNull::from(*node).cast(),
             AnyNodeRef::StmtClassDef(node) => NonNull::from(*node).cast(),
             AnyNodeRef::StmtReturn(node) => NonNull::from(*node).cast(),
@@ -3172,8 +3049,7 @@ impl<'a> AnyNodeRef<'a> {
     /// Returns the node's [`kind`](NodeKind) that has no data associated and is [`Copy`].
     pub const fn kind(self) -> NodeKind {
         match self {
-            AnyNodeRef::ModModule(_) => NodeKind::ModModule,
-            AnyNodeRef::ModExpression(_) => NodeKind::ModExpression,
+            AnyNodeRef::AnyMod(node) => node.kind(),
             AnyNodeRef::StmtFunctionDef(_) => NodeKind::StmtFunctionDef,
             AnyNodeRef::StmtClassDef(_) => NodeKind::StmtClassDef,
             AnyNodeRef::StmtReturn(_) => NodeKind::StmtReturn,
@@ -3295,8 +3171,7 @@ impl<'a> AnyNodeRef<'a> {
             | AnyNodeRef::StmtContinue(_)
             | AnyNodeRef::StmtIpyEscapeCommand(_) => true,
 
-            AnyNodeRef::ModModule(_)
-            | AnyNodeRef::ModExpression(_)
+            AnyNodeRef::AnyMod(_)
             | AnyNodeRef::ExprBoolOp(_)
             | AnyNodeRef::ExprNamed(_)
             | AnyNodeRef::ExprBinOp(_)
@@ -3400,8 +3275,7 @@ impl<'a> AnyNodeRef<'a> {
             | AnyNodeRef::ExprSlice(_)
             | AnyNodeRef::ExprIpyEscapeCommand(_) => true,
 
-            AnyNodeRef::ModModule(_)
-            | AnyNodeRef::ModExpression(_)
+            AnyNodeRef::AnyMod(_)
             | AnyNodeRef::StmtFunctionDef(_)
             | AnyNodeRef::StmtClassDef(_)
             | AnyNodeRef::StmtReturn(_)
@@ -3465,7 +3339,7 @@ impl<'a> AnyNodeRef<'a> {
 
     pub const fn is_module(self) -> bool {
         match self {
-            AnyNodeRef::ModModule(_) | AnyNodeRef::ModExpression(_) => true,
+            AnyNodeRef::AnyMod(_) => true,
 
             AnyNodeRef::StmtFunctionDef(_)
             | AnyNodeRef::StmtClassDef(_)
@@ -3571,8 +3445,7 @@ impl<'a> AnyNodeRef<'a> {
             | AnyNodeRef::PatternMatchAs(_)
             | AnyNodeRef::PatternMatchOr(_) => true,
 
-            AnyNodeRef::ModModule(_)
-            | AnyNodeRef::ModExpression(_)
+            AnyNodeRef::AnyMod(_)
             | AnyNodeRef::StmtFunctionDef(_)
             | AnyNodeRef::StmtClassDef(_)
             | AnyNodeRef::StmtReturn(_)
@@ -3662,8 +3535,7 @@ impl<'a> AnyNodeRef<'a> {
         match self {
             AnyNodeRef::ExceptHandlerExceptHandler(_) => true,
 
-            AnyNodeRef::ModModule(_)
-            | AnyNodeRef::ModExpression(_)
+            AnyNodeRef::AnyMod(_)
             | AnyNodeRef::StmtFunctionDef(_)
             | AnyNodeRef::StmtClassDef(_)
             | AnyNodeRef::StmtReturn(_)
@@ -3772,8 +3644,7 @@ impl<'a> AnyNodeRef<'a> {
         'a: 'b,
     {
         match self {
-            AnyNodeRef::ModModule(node) => node.visit_source_order(visitor),
-            AnyNodeRef::ModExpression(node) => node.visit_source_order(visitor),
+            AnyNodeRef::AnyMod(node) => node.visit_preorder(visitor),
             AnyNodeRef::StmtFunctionDef(node) => node.visit_source_order(visitor),
             AnyNodeRef::StmtClassDef(node) => node.visit_source_order(visitor),
             AnyNodeRef::StmtReturn(node) => node.visit_source_order(visitor),
@@ -4040,18 +3911,6 @@ where
     T: Into<AnyNodeRef<'a>>,
 {
     right.is_some_and(|right| left.ptr_eq(right.into()))
-}
-
-impl<'a> From<&'a ast::ModModule> for AnyNodeRef<'a> {
-    fn from(node: &'a ast::ModModule) -> Self {
-        AnyNodeRef::ModModule(node)
-    }
-}
-
-impl<'a> From<&'a ast::ModExpression> for AnyNodeRef<'a> {
-    fn from(node: &'a ast::ModExpression) -> Self {
-        AnyNodeRef::ModExpression(node)
-    }
 }
 
 impl<'a> From<&'a ast::StmtFunctionDef> for AnyNodeRef<'a> {
@@ -4604,15 +4463,6 @@ impl<'a> From<&'a Expr> for AnyNodeRef<'a> {
     }
 }
 
-impl<'a> From<&'a Mod> for AnyNodeRef<'a> {
-    fn from(module: &'a Mod) -> Self {
-        match module {
-            Mod::Module(node) => AnyNodeRef::ModModule(node),
-            Mod::Expression(node) => AnyNodeRef::ModExpression(node),
-        }
-    }
-}
-
 impl<'a> From<&'a FStringElement> for AnyNodeRef<'a> {
     fn from(element: &'a FStringElement) -> Self {
         match element {
@@ -4711,8 +4561,7 @@ impl<'a> From<&'a ast::Identifier> for AnyNodeRef<'a> {
 impl Ranged for AnyNodeRef<'_> {
     fn range(&self) -> TextRange {
         match self {
-            AnyNodeRef::ModModule(node) => node.range(),
-            AnyNodeRef::ModExpression(node) => node.range(),
+            AnyNodeRef::AnyMod(node) => node.range(),
             AnyNodeRef::StmtFunctionDef(node) => node.range(),
             AnyNodeRef::StmtClassDef(node) => node.range(),
             AnyNodeRef::StmtReturn(node) => node.range(),

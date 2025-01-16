@@ -11,6 +11,7 @@ use std::sync::OnceLock;
 use bitflags::bitflags;
 use itertools::Itertools;
 
+use ruff_macros::ast_enum;
 use ruff_text_size::{Ranged, TextLen, TextRange, TextSize};
 
 use crate::name::Name;
@@ -22,7 +23,7 @@ use crate::{
 };
 
 /// See also [mod](https://docs.python.org/3/library/ast.html#ast.mod)
-#[derive(Clone, Debug, PartialEq, is_macro::Is)]
+#[ast_enum]
 pub enum Mod {
     Module(ModModule),
     Expression(ModExpression),
@@ -35,23 +36,11 @@ pub struct ModModule {
     pub body: Vec<Stmt>,
 }
 
-impl From<ModModule> for Mod {
-    fn from(payload: ModModule) -> Self {
-        Mod::Module(payload)
-    }
-}
-
 /// See also [Expression](https://docs.python.org/3/library/ast.html#ast.Expression)
 #[derive(Clone, Debug, PartialEq)]
 pub struct ModExpression {
     pub range: TextRange,
     pub body: Box<Expr>,
-}
-
-impl From<ModExpression> for Mod {
-    fn from(payload: ModExpression) -> Self {
-        Mod::Expression(payload)
-    }
 }
 
 /// See also [stmt](https://docs.python.org/3/library/ast.html#ast.stmt)
@@ -4108,25 +4097,6 @@ impl From<bool> for Singleton {
             Singleton::True
         } else {
             Singleton::False
-        }
-    }
-}
-
-impl Ranged for crate::nodes::ModModule {
-    fn range(&self) -> TextRange {
-        self.range
-    }
-}
-impl Ranged for crate::nodes::ModExpression {
-    fn range(&self) -> TextRange {
-        self.range
-    }
-}
-impl Ranged for crate::Mod {
-    fn range(&self) -> TextRange {
-        match self {
-            Self::Module(node) => node.range(),
-            Self::Expression(node) => node.range(),
         }
     }
 }

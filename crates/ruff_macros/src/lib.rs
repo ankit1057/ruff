@@ -4,8 +4,9 @@ use crate::cache_key::derive_cache_key;
 use crate::newtype_index::generate_newtype_index;
 use crate::violation_metadata::violation_metadata;
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, DeriveInput, Error, ItemFn, ItemStruct};
+use syn::{parse_macro_input, DeriveInput, Error, ItemEnum, ItemFn, ItemStruct};
 
+mod ast_node;
 mod cache_key;
 mod combine_options;
 mod config;
@@ -119,4 +120,12 @@ pub fn newtype_index(_metadata: TokenStream, input: TokenStream) -> TokenStream 
     };
 
     TokenStream::from(output)
+}
+
+#[proc_macro_attribute]
+pub fn ast_enum(_metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as ItemEnum);
+    ast_node::generate_ast_enum(input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
 }

@@ -14,7 +14,7 @@ license = { workspace = true }
 
 [dependencies]
 ruff_cache = { workspace = true, optional = true }
-ruff_macros = { workspace = true, optional = true }
+ruff_macros = { workspace = true }
 ruff_python_trivia = { workspace = true }
 ruff_source_file = { workspace = true }
 ruff_text_size = { workspace = true }
@@ -31,7 +31,7 @@ serde = { workspace = true, optional = true }
 
 [features]
 schemars = ["dep:schemars"]
-cache = ["dep:ruff_cache", "dep:ruff_macros"]
+cache = ["dep:ruff_cache"]
 serde = [
   "dep:serde",
   "ruff_text_size/serde",

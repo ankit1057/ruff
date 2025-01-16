@@ -1,7 +1,8 @@
 use ast::helpers::comment_indentation_after;
 use ruff_python_ast::whitespace::indentation;
 use ruff_python_ast::{
-    self as ast, AnyNodeRef, Comprehension, Expr, ModModule, Parameter, Parameters, StringLike,
+    self as ast, AnyNodeRef, Comprehension, Expr, ModModule, ModRef, Parameter, Parameters,
+    StringLike,
 };
 use ruff_python_trivia::{
     find_only_token_in_range, first_non_trivia_token, indentation_at_offset, BackwardsTokenizer,
@@ -285,7 +286,7 @@ fn handle_enclosed_comment<'a>(
 
             CommentPlacement::Default(comment)
         }
-        AnyNodeRef::ModModule(module) => {
+        AnyNodeRef::AnyMod(ModRef::Module(module)) => {
             handle_trailing_module_comment(module, comment).or_else(|comment| {
                 handle_module_level_own_line_comment_before_class_or_function_comment(
                     comment, source,
